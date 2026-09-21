@@ -41,9 +41,11 @@ class ProductSeeder extends Seeder
             // Collars
             [
                 'category_id'       => $collars?->id,
-                'name'              => 'Genuine Leather Collar',
+                'name'              => 'Collare in pelle vera',
+                'name_en'           => 'Genuine Leather Collar',
                 'slug'              => 'genuine-leather-collar',
-                'description'       => 'Handcrafted from premium full-grain leather. Soft on your dog\'s neck, durable for everyday use. Brass buckle and D-ring.',
+                'description'       => 'Realizzato a mano in pelle pieno fiore di prima qualità. Morbido sul collo del cane, resistente per l\'uso quotidiano. Fibbia e anello a D in ottone.',
+                'description_en'    => 'Handcrafted from premium full-grain leather. Soft on your dog\'s neck, durable for everyday use. Brass buckle and D-ring.',
                 'price'             => 29.99,
                 'available_colors'  => $colorSets['classic'],
                 'available_sizes'   => $collarSizes,
@@ -54,9 +56,11 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id'       => $collars?->id,
-                'name'              => 'Pastel Nylon Collar',
+                'name'              => 'Collare nylon pastello',
+                'name_en'           => 'Pastel Nylon Collar',
                 'slug'              => 'pastel-nylon-collar',
-                'description'       => 'Lightweight and water-resistant nylon collar in beautiful pastel tones. Perfect for active dogs.',
+                'description'       => 'Collare in nylon leggero e idrorepellente in tonalità pastello. Ideale per cani attivi.',
+                'description_en'    => 'Lightweight and water-resistant nylon collar in beautiful pastel tones. Perfect for active dogs.',
                 'price'             => 14.99,
                 'available_colors'  => $colorSets['pastels'],
                 'available_sizes'   => $collarSizes,
@@ -68,9 +72,11 @@ class ProductSeeder extends Seeder
             // Leashes
             [
                 'category_id'       => $leashes?->id,
-                'name'              => 'Braided Leather Leash',
+                'name'              => 'Guinzaglio in pelle intrecciata',
+                'name_en'           => 'Braided Leather Leash',
                 'slug'              => 'braided-leather-leash',
-                'description'       => 'Elegant braided leather leash, 1.5m length. Comfortable padded handle. Available in classic colors.',
+                'description'       => 'Elegante guinzaglio in pelle intrecciata, lunghezza 1,5 m. Impugnatura imbottita comoda. Disponibile in colori classici.',
+                'description_en'    => 'Elegant braided leather leash, 1.5m length. Comfortable padded handle. Available in classic colors.',
                 'price'             => 34.99,
                 'available_colors'  => $colorSets['classic'],
                 'available_sizes'   => null,
@@ -81,9 +87,11 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id'       => $leashes?->id,
-                'name'              => 'Retractable Dog Leash',
+                'name'              => 'Guinzaglio retrattile',
+                'name_en'           => 'Retractable Dog Leash',
                 'slug'              => 'retractable-dog-leash',
-                'description'       => 'Extends up to 5 meters for maximum freedom. One-button brake and lock. Suitable for dogs up to 25kg.',
+                'description'       => 'Si estende fino a 5 metri per la massima libertà. Freno e blocco con un pulsante. Adatto a cani fino a 25 kg.',
+                'description_en'    => 'Extends up to 5 meters for maximum freedom. One-button brake and lock. Suitable for dogs up to 25kg.',
                 'price'             => 22.99,
                 'available_colors'  => $colorSets['neutral'],
                 'available_sizes'   => null,
@@ -95,9 +103,11 @@ class ProductSeeder extends Seeder
             // Coats
             [
                 'category_id'       => $coats?->id,
-                'name'              => 'Winter Puffer Coat',
+                'name'              => 'Cappotto imbottito invernale',
+                'name_en'           => 'Winter Puffer Coat',
                 'slug'              => 'winter-puffer-coat',
-                'description'       => 'Keeps your dog warm during cold winter walks. Water-repellent outer shell, cosy inner lining. Full belly coverage.',
+                'description'       => 'Tiene al caldo il tuo cane nelle passeggiate invernali. Esterno idrorepellente, fodera interna morbida. Copertura completa del ventre.',
+                'description_en'    => 'Keeps your dog warm during cold winter walks. Water-repellent outer shell, cosy inner lining. Full belly coverage.',
                 'price'             => 49.99,
                 'available_colors'  => $colorSets['neutral'],
                 'available_sizes'   => $sizes,
@@ -108,9 +118,11 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id'       => $coats?->id,
-                'name'              => 'Raincoat with Hood',
+                'name'              => 'Impermeabile con cappuccio',
+                'name_en'           => 'Raincoat with Hood',
                 'slug'              => 'raincoat-with-hood',
-                'description'       => 'Fully waterproof with adjustable hood. Velcro belly strap for secure fit. Easy to clean.',
+                'description'       => 'Completamente impermeabile con cappuccio regolabile. Cinghia ventrale in velcro per una vestibilità sicura. Facile da pulire.',
+                'description_en'    => 'Fully waterproof with adjustable hood. Velcro belly strap for secure fit. Easy to clean.',
                 'price'             => 39.99,
                 'available_colors'  => $colorSets['pastels'],
                 'available_sizes'   => $sizes,
@@ -122,9 +134,11 @@ class ProductSeeder extends Seeder
             // Harnesses
             [
                 'category_id'       => $harnesses?->id,
-                'name'              => 'No-Pull Step-In Harness',
+                'name'              => 'Pettorina anti-tiro step-in',
+                'name_en'           => 'No-Pull Step-In Harness',
                 'slug'              => 'no-pull-step-in-harness',
-                'description'       => 'Easy step-in design with front and back leash attachments. Padded chest plate for comfort. Reflective strips for night safety.',
+                'description'       => 'Design step-in facile con agganci anteriori e posteriori. Petto imbottito per il comfort. Strisce riflettenti per la sicurezza notturna.',
+                'description_en'    => 'Easy step-in design with front and back leash attachments. Padded chest plate for comfort. Reflective strips for night safety.',
                 'price'             => 44.99,
                 'available_colors'  => $colorSets['classic'],
                 'available_sizes'   => $sizes,
@@ -135,9 +149,11 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id'       => $harnesses?->id,
-                'name'              => 'Adventure Hiking Harness',
+                'name'              => 'Pettorina da trekking',
+                'name_en'           => 'Adventure Hiking Harness',
                 'slug'              => 'adventure-hiking-harness',
-                'description'       => 'Heavy-duty harness for outdoor adventures. Handle on back for assistance on rough terrain. Multiple adjustment points.',
+                'description'       => 'Pettorina robusta per avventure all\'aperto. Maniglia sul dorso per assistenza su terreni difficili. Punti di regolazione multipli.',
+                'description_en'    => 'Heavy-duty harness for outdoor adventures. Handle on back for assistance on rough terrain. Multiple adjustment points.',
                 'price'             => 59.99,
                 'available_colors'  => $colorSets['neutral'],
                 'available_sizes'   => $sizes,
@@ -149,9 +165,11 @@ class ProductSeeder extends Seeder
             // Bag Holders
             [
                 'category_id'       => $bagHolders?->id,
-                'name'              => 'Leather Bag Holder Keychain',
+                'name'              => 'Porta sacchetti in pelle',
+                'name_en'           => 'Leather Bag Holder Keychain',
                 'slug'              => 'leather-bag-holder-keychain',
-                'description'       => 'Stylish leather pouch that attaches to any leash or bag. Includes 1 roll of bags. Never forget bags again.',
+                'description'       => 'Elegante pochette in pelle da agganciare a guinzaglio o borsa. Include 1 rotolo di sacchetti. Non dimenticare mai i sacchetti.',
+                'description_en'    => 'Stylish leather pouch that attaches to any leash or bag. Includes 1 roll of bags. Never forget bags again.',
                 'price'             => 12.99,
                 'available_colors'  => $colorSets['classic'],
                 'available_sizes'   => null,
@@ -162,9 +180,11 @@ class ProductSeeder extends Seeder
             ],
             [
                 'category_id'       => $bagHolders?->id,
-                'name'              => 'Silicone Bag Dispenser',
+                'name'              => 'Dispenser sacchetti in silicone',
+                'name_en'           => 'Silicone Bag Dispenser',
                 'slug'              => 'silicone-bag-dispenser',
-                'description'       => 'Bright and easy-to-find silicone dispenser. Holds standard rolls. Comes in fun colors. Includes 2 rolls of eco-friendly bags.',
+                'description'       => 'Dispenser in silicone vivace e facile da individuare. Contiene rotoli standard. Colori divertenti. Include 2 rotoli di sacchetti ecologici.',
+                'description_en'    => 'Bright and easy-to-find silicone dispenser. Holds standard rolls. Comes in fun colors. Includes 2 rolls of eco-friendly bags.',
                 'price'             => 9.99,
                 'available_colors'  => $colorSets['pastels'],
                 'available_sizes'   => null,
@@ -176,7 +196,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::firstOrCreate(['slug' => $product['slug']], $product);
+            Product::updateOrCreate(['slug' => $product['slug']], $product);
         }
     }
 }

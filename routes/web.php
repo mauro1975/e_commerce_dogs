@@ -45,7 +45,7 @@ Route::middleware("auth")->group(function () {
     Route::get("/account/orders", [HomeController::class, "orderHistory"])->name("account.orders");
 });
 
-Route::middleware("auth")->prefix("admin")->name("admin.")->group(function () {
+Route::prefix("admin")->name("admin.")->group(function () {
     Route::get("/", [AdminWebController::class, "dashboard"])->name("dashboard");
     Route::get("/products", [AdminWebController::class, "products"])->name("products");
     Route::get("/products/create", [AdminWebController::class, "createProduct"])->name("products.create");

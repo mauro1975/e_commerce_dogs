@@ -163,7 +163,7 @@
     <div class="admin-topbar">
         <h2>@yield('page_title', 'Dashboard')</h2>
         <div style="display:flex;align-items:center;gap:12px;">
-            <span style="font-size:14px;color:#666;">{{ auth()->user()->name }}</span>
+            <span style="font-size:14px;color:#666;">{{ auth()->user()?->name ?? 'Admin' }}</span>
             <div style="width:36px;height:36px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                 <i class="bi bi-person" style="color:var(--green-dark);"></i>
             </div>

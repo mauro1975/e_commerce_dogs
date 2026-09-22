@@ -23,16 +23,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdminWebController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!auth()->check() || !auth()->user()->isAdmin()) {
-                abort(403, 'Admin access only.');
-            }
-            return $next($request);
-        });
-    }
-
     public function dashboard()
     {
         $totalRevenue  = Order::where('payment_status', 'paid')->sum('total');

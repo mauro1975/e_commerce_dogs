@@ -225,22 +225,40 @@ class AdminWebController extends Controller
         $data['is_featured']    = $request->boolean('is_featured');
         $data['is_best_seller'] = $request->boolean('is_best_seller');
 
-        if ($request->hasFile('images')) {
-            // Delete old images
-            foreach ($product->images ?? [] as $oldPath) {
-                $abs = public_path($oldPath);
-                if (file_exists($abs)) unlink($abs);
+        // Product gallery (add / remove individual photos)
+        $galleryImages = is_array($product->images)
+            ? $product->images
+            : (json_decode($product->images ?? '[]', true) ?? []);
+
+        foreach ($request->input('delete_product_images', []) as $delPath) {
+            if (! is_string($delPath) || $delPath === '') {
+                continue;
             }
-            $dir = public_path('images/products');
-            if (!is_dir($dir)) mkdir($dir, 0755, true);
-            $paths = [];
-            foreach ($request->file('images') as $file) {
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move($dir, $filename);
-                $paths[] = 'images/products/' . $filename;
+            $abs = public_path($delPath);
+            if (file_exists($abs)) {
+                @unlink($abs);
             }
-            $data['images'] = $paths;
-            $data['image']  = $paths[0];
+            $galleryImages = array_values(array_filter(
+                $galleryImages,
+                fn ($p) => $p !== $delPath
+            ));
+        }
+
+        $productUploadDir = public_path('images/products');
+        if (! is_dir($productUploadDir)) {
+            mkdir($productUploadDir, 0755, true);
+        }
+
+        $newProductFiles = $request->file('product_images', []);
+        if (! is_array($newProductFiles)) {
+            $newProductFiles = [$newProductFiles];
+        }
+        foreach ($newProductFiles as $file) {
+            if ($file && $file->isValid()) {
+                $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                $file->move($productUploadDir, $filename);
+                $galleryImages[] = 'images/products/'.$filename;
+            }
         }
 
         // Update variant stocks
@@ -277,8 +295,7 @@ class AdminWebController extends Controller
         // delete_color_images[ColorName][] = array of paths to remove
         $deleteColorImages = $request->input('delete_color_images', []);
 
-        $colorUploadDir = public_path('images/products');
-        if (!is_dir($colorUploadDir)) mkdir($colorUploadDir, 0755, true);
+        $colorUploadDir = $productUploadDir;
 
         $data['available_colors'] = array_values(array_map(
             function ($n) use ($colorMap, $existingColorImagesMap, $deleteColorImages, $request, $colorUploadDir) {
@@ -317,17 +334,16 @@ class AdminWebController extends Controller
         ));
         $data['available_sizes'] = array_values($request->input('sizes', []));
 
-        // Keep product-level images in sync with all color images combined
+        // Merge general gallery with per-color images (unique, gallery first)
         $allColorImgs = [];
         foreach ($data['available_colors'] as $col) {
             foreach ($col['images'] ?? (isset($col['image']) ? [$col['image']] : []) as $img) {
                 $allColorImgs[] = $img;
             }
         }
-        if (!empty($allColorImgs)) {
-            $data['images'] = $allColorImgs;
-            $data['image']  = $allColorImgs[0];
-        }
+        $mergedImages = array_values(array_unique(array_merge($galleryImages, $allColorImgs)));
+        $data['images'] = $mergedImages;
+        $data['image']  = $mergedImages[0] ?? null;
 
         $product->update($data);
         return redirect()->route('admin.products')->with('success', 'Product updated!');

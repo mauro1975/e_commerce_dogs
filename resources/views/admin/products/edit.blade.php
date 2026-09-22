@@ -80,6 +80,46 @@
                 </div>
 
                 <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:28px;margin-bottom:20px;">
+                    <h5 style="font-weight:700;margin-bottom:8px;">Foto prodotto</h5>
+                    <p style="font-size:13px;color:#888;margin-bottom:20px;">
+                        Galleria principale del prodotto (homepage, elenco, scheda). Clicca × per eliminare; salva con «Aggiorna Prodotto».
+                    </p>
+                    @php
+                        $productGalleryImages = is_array($product->images)
+                            ? $product->images
+                            : (json_decode($product->images ?? '[]', true) ?? []);
+                    @endphp
+
+                    @if(!empty($productGalleryImages))
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+                        @foreach($productGalleryImages as $gIdx => $galleryPath)
+                        <div style="position:relative;" id="productImgCard_{{ $gIdx }}">
+                            <img src="{{ asset($galleryPath) }}" alt=""
+                                 style="width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #ddd;transition:opacity .2s,filter .2s;">
+                            <button type="button"
+                                    style="position:absolute;top:-8px;right:-8px;background:#e53935;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;"
+                                    onclick="markDeleteProductImg(this, {{ $gIdx }})"
+                                    title="Elimina">&times;</button>
+                            <input type="checkbox"
+                                   name="delete_product_images[]"
+                                   value="{{ $galleryPath }}"
+                                   style="display:none;"
+                                   id="delProductImg_{{ $gIdx }}">
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <p style="font-size:13px;color:#999;margin-bottom:16px;">Nessuna foto caricata.</p>
+                    @endif
+
+                    <div id="productNewPreviews" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+                    <label class="form-label">Aggiungi foto</label>
+                    <input type="file" name="product_images[]" id="productImagesInput"
+                           class="form-control" accept="image/*" multiple
+                           onchange="previewProductImgs(this)">
+                </div>
+
+                <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:28px;margin-bottom:20px;">
                     <h5 style="font-weight:700;margin-bottom:20px;">Colors & Sizes</h5>
                     @php
                         $currentColors = is_array($product->available_colors)
@@ -280,6 +320,62 @@ function _rebuildEditPreview(slug) {
 function markDeleteImg(btn, slug, idx) {
     const cb  = document.getElementById('delCheck_' + slug + '_' + idx);
     const img = btn.previousElementSibling;
+    if (cb.checked) {
+        cb.checked = false;
+        btn.style.background = '#e53935';
+        img.style.opacity = '1';
+        img.style.filter  = '';
+    } else {
+        cb.checked = true;
+        btn.style.background = '#aaa';
+        img.style.opacity = '0.35';
+        img.style.filter  = 'grayscale(1)';
+    }
+}
+
+const _productFilesState = { files: [], input: null };
+
+function previewProductImgs(input) {
+    _productFilesState.input = input;
+    Array.from(input.files).forEach(f => _productFilesState.files.push(f));
+    rebuildProductPreview();
+}
+
+function rebuildProductPreview() {
+    const { files, input } = _productFilesState;
+    if (input) {
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+        input.files = dt.files;
+    }
+    const container = document.getElementById('productNewPreviews');
+    if (!container) return;
+    container.innerHTML = '';
+    files.forEach((file, idx) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'position:relative;display:inline-block;';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.cssText = 'width:72px;height:72px;object-fit:cover;border-radius:6px;border:2px solid #9BC3B1;';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.innerHTML = '&times;';
+            btn.style.cssText = 'position:absolute;top:-7px;right:-7px;background:#e53935;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;line-height:1;padding:0;';
+            btn.onclick = () => { _productFilesState.files.splice(idx, 1); rebuildProductPreview(); };
+            wrap.appendChild(img);
+            wrap.appendChild(btn);
+            container.appendChild(wrap);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function markDeleteProductImg(btn, idx) {
+    const cb  = document.getElementById('delProductImg_' + idx);
+    const img = btn.previousElementSibling;
+    if (!cb || !img) return;
     if (cb.checked) {
         cb.checked = false;
         btn.style.background = '#e53935';

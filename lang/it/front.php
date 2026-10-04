@@ -116,26 +116,14 @@ return [
 
     // ── Pagina Chi Siamo ──────────────────────────────────────────────
     'about_hero_eyebrow' => 'Il Mondo Rosmarino',
-    'about_hero_title'   => 'Il Lusso per i Piccoli di Casa',
-    'about_hero_text'    => '<p>Rosmarino nasce da un\'idea semplice ma ambiziosa: portare l\'eccellenza della grande tradizione artigianale italiana nel guardaroba dei cani di piccola taglia. Proprio come la pianta da cui prendiamo il nome – simbolo di affetto, ricordi preziosi e radici italiane – creiamo collezioni pensate per durare nel tempo, unendo il massimo comfort a un\'estetica raffinata.</p>
-<p>Ogni capo e accessorio è una dichiarazione d\'amore per i vostri fedeli compagni, pensata per valorizzare la loro bellezza e proteggere il loro benessere.</p>
-
-<p>La nostra linea di maglieria avvolge i cani più piccoli in un abbraccio di pura morbidezza.</p>
-<ul>
-<li>100% cashmere pregiato di origine italiana</li>
-<li>Filati leggeri, traspiranti e caldissimi</li>
-<li>Massimo rispetto per la pelle delicata del cane</li>
-<li>Tagli studiati per garantire totale libertà di movimento</li>
-</ul>
-<h4>Accessori in vera pelle: eleganza in movimento</h4>
-<p>Per il momento della passeggiata, Rosmarino propone una linea coordinata dal design impeccabile.</p>
-<ul>
-<li>Guinzagli e porta-sacchetti in 100% vera pelle italiana</li>
-<li>Lavorazione artigianale con cuciture e finiture di alta qualità</li>
-<li>Palette di colori per abbinarsi allo stile di ogni proprietario</li>
-<li>Accessori funzionali, resistenti e incredibilmente chic</li>
-</ul>
-</p>',
+    'about_hero_title'   => 'La Nostra Storia',
+    'about_hero_text'    => '<p>Rosmarino nasce da una storia d\'amore profonda, la fusione dei nomi dei nostri genitori e di quello del nostro bassottino Mario, una creatura piccola ma dal cuore immenso.</p>
+<p>Anche il nostro simbolo racchiude un significato radicato nella terra e nei sentimenti proprio come la pianta da cui prendiamo il nome, resistente e profumata, Rosmarino racconta una storia di tradizione, simboleggiando la fedeltà eterna, il ricordo e un legame indistruttibile.</p>
+<p>Ogni nostro cappottino in puro cashmere non è semplicemente un capo d\'abbigliamento, ma un abbraccio caldo, morbido e avvolgente. È un gesto d\'amore pensato esclusivamente per far sentire speciali i nostri amici a quattro zampe nelle loro avventure quotidiane.</p>
+<p>La stessa cura definisce la nostra linea di guinzaglieria. Ogni collare, guinzaglio e portasacchettini in vera pelle italiana unisce in modo armonioso eleganza e funzionalità. Non sono semplici accessori, ma veri e propri segni di stile.</p>
+<p>Ogni nostra creazione prende vita in Italia, plasmata da quella maestria artigiana che rende il nostro Paese unico al mondo. Ispirandoci alla natura, diamo forma a collezioni capaci di coniugare il massimo comfort a un\'estetica raffinata e senza tempo.</p>
+<p>Con Rosmarino, ogni dettaglio parla d\'amore, dall\'artigianato alle confezioni regalo, dal design essenziale alla cura di ogni cucitura.</p>
+<p>Perché il lusso quando nasce dall\'amore, non è mai eccesso. È solo autenticità.</p>',
     'about_values_eyebrow' => 'Cosa ci spinge',
     'about_values_heading' => 'Qualità in Ogni Punto',
     'about_values_p1'    => 'Ogni prodotto nel nostro negozio è selezionato a mano o progettato dal nostro team. Lavoriamo solo con materiali sicuri, duraturi e alla moda. Testiamo ogni articolo sui nostri cani prima che arrivi in negozio.',

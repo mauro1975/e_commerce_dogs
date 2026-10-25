@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            ColorSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
             DiscountSeeder::class,

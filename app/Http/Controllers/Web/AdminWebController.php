@@ -13,6 +13,7 @@ use App\Models\GalleryPhoto;
 use App\Models\Order;
 use App\Models\PageVisit;
 use App\Models\Product;
+use App\Models\ProductColor;
 use App\Models\ProductVariant;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,7 +81,9 @@ class AdminWebController extends Controller
     public function createProduct()
     {
         $categories = Category::orderBy('name')->get();
-        return view('admin.products.create', compact('categories'));
+        $colorOptions = ProductColor::optionsForForms();
+
+        return view('admin.products.create', compact('categories', 'colorOptions'));
     }
 
     public function storeProduct(Request $request)
@@ -109,19 +112,14 @@ class AdminWebController extends Controller
         $data['is_best_seller'] = $request->boolean('is_best_seller');
         $data['stock']          = (int) $request->input('stock', 0);
 
-        $colorMap = [
-            'Arancione' => '#E8832A',
-            'Rosa'      => '#F4A7B9',
-            'Verde'     => '#9BC3B1',
-            'Marrone'   => '#8B5E3C',
-        ];
+        $colorMap = ProductColor::hexMap();
 
         $selectedColors = $request->input('colors', []);
         $selectedSizes  = $request->input('sizes', []);
 
         // Build available_colors array
         $data['available_colors'] = array_values(array_map(
-            fn($n) => ['name' => $n, 'hex' => $colorMap[$n] ?? '#cccccc'],
+            fn ($n) => ['name' => $n, 'hex' => $colorMap[$n] ?? '#cccccc'],
             $selectedColors
         ));
         $data['available_sizes'] = array_values($selectedSizes);
@@ -186,7 +184,9 @@ class AdminWebController extends Controller
     public function editProduct(Product $product)
     {
         $categories = Category::orderBy('name')->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $colorOptions = ProductColor::optionsForForms($product);
+
+        return view('admin.products.edit', compact('product', 'categories', 'colorOptions'));
     }
 
     public function updateProduct(Request $request, Product $product)
@@ -257,12 +257,7 @@ class AdminWebController extends Controller
         }
 
         // Colors & Sizes from checkboxes
-        $colorMap = [
-            'Arancione' => '#E8832A',
-            'Rosa'      => '#F4A7B9',
-            'Verde'     => '#9BC3B1',
-            'Marrone'   => '#8B5E3C',
-        ];
+        $colorMap = ProductColor::hexMap();
         $selectedColors = $request->input('colors', []);
 
         // Build existing per-color images map (supports both old 'image' and new 'images')
@@ -508,6 +503,57 @@ class AdminWebController extends Controller
         $this->deleteCategoryImageFile($category->image);
         $category->delete();
         return redirect()->route('admin.categories')->with('success', 'Category deleted!');
+    }
+
+    public function colors()
+    {
+        $colors = ProductColor::orderBy('sort_order')->orderBy('name')->get();
+
+        return view('admin.colors', compact('colors'));
+    }
+
+    public function storeColor(Request $request)
+    {
+        $data = $this->validateProductColor($request);
+        ProductColor::create($data);
+
+        return redirect()->route('admin.colors')->with('success', 'Colore aggiunto.');
+    }
+
+    public function updateColor(Request $request, ProductColor $productColor)
+    {
+        $data = $this->validateProductColor($request, $productColor);
+        $productColor->update($data);
+
+        return redirect()->route('admin.colors')->with('success', 'Colore aggiornato.');
+    }
+
+    public function destroyColor(ProductColor $productColor)
+    {
+        $productColor->delete();
+
+        return redirect()->route('admin.colors')->with('success', 'Colore eliminato.');
+    }
+
+    protected function validateProductColor(Request $request, ?ProductColor $productColor = null): array
+    {
+        $uniqueRule = 'unique:product_colors,name';
+        if ($productColor) {
+            $uniqueRule .= ','.$productColor->id;
+        }
+
+        $data = $request->validate([
+            'name'       => 'required|string|max:100|'.$uniqueRule,
+            'name_en'    => 'nullable|string|max:100',
+            'hex'        => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $data['hex'] = strtoupper($data['hex']);
+        $data['is_active'] = $request->boolean('is_active', true);
+        $data['sort_order'] = (int) ($data['sort_order'] ?? 0);
+
+        return $data;
     }
 
     protected function storeCategoryImageFile(\Illuminate\Http\UploadedFile $file): string

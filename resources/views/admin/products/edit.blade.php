@@ -120,7 +120,10 @@
                 </div>
 
                 <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:28px;margin-bottom:20px;">
-                    <h5 style="font-weight:700;margin-bottom:20px;">Colors & Sizes</h5>
+                    <h5 style="font-weight:700;margin-bottom:20px;">Colori e taglie</h5>
+                    <p style="font-size:13px;color:#888;margin:-12px 0 16px;">
+                        I colori si gestiscono in <a href="{{ route('admin.colors') }}">Admin → Colori</a>.
+                    </p>
                     @php
                         $currentColors = is_array($product->available_colors)
                             ? $product->available_colors
@@ -133,17 +136,17 @@
                         $currentSizes = old('sizes', is_array($product->available_sizes)
                             ? $product->available_sizes
                             : (json_decode($product->available_sizes ?? '[]', true) ?? []));
-                        $colorOptions = [
-                            'Arancione' => '#E8832A',
-                            'Rosa'      => '#F4A7B9',
-                            'Verde'     => '#9BC3B1',
-                            'Marrone'   => '#8B5E3C',
-                        ];
+                        $colorOptions = $colorOptions ?? [];
                         $sizeOptions = ['XS', 'S', 'M', 'L'];
                     @endphp
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Colori disponibili</label>
+                        @if(empty($colorOptions))
+                            <p style="font-size:13px;color:#888;margin:8px 0 0;">
+                                Nessun colore attivo. <a href="{{ route('admin.colors') }}">Gestisci colori</a>.
+                            </p>
+                        @endif
                         <div class="d-flex gap-4 flex-wrap mt-1" id="editColorCheckboxes">
                             @foreach($colorOptions as $colorName => $colorHex)
                                 <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">

@@ -19,30 +19,7 @@ class ShopController extends Controller
     {
         $category = Category::where('slug', $slug)->where('is_active', true)->firstOrFail();
 
-        // All products (full columns) — used for thumbnails + building filter options
-        $allProducts = Product::where('category_id', $category->id)
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
-
-        $availableSizes = $allProducts
-            ->flatMap(fn($p) => $p->available_sizes ?? [])
-            ->unique()->sort()->values();
-
-        $availableColors = $allProducts
-            ->flatMap(fn($p) => $p->available_colors ?? [])
-            ->unique('name')->values();
-
-        // Filtered query
         $query = Product::where('category_id', $category->id)->where('is_active', true);
-
-        if ($request->filled('size')) {
-            $query->whereJsonContains('available_sizes', $request->size);
-        }
-
-        if ($request->filled('color')) {
-            $query->whereJsonContains('available_colors', ['name' => $request->color]);
-        }
 
         match($request->input('sort')) {
             'price_asc'  => $query->orderBy('price'),
@@ -53,7 +30,7 @@ class ShopController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        return view('shop.category', compact('category', 'products', 'allProducts', 'availableSizes', 'availableColors'));
+        return view('shop.category', compact('category', 'products'));
     }
 
     public function product(string $slug)

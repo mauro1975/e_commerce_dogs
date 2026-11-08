@@ -137,7 +137,7 @@
                             ? $product->available_sizes
                             : (json_decode($product->available_sizes ?? '[]', true) ?? []));
                         $colorOptions = $colorOptions ?? [];
-                        $sizeOptions = ['XS', 'S', 'M', 'L'];
+                        $sizeOptions = ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
                     @endphp
 
                     <div class="mb-3">

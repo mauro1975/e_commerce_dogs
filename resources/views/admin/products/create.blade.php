@@ -87,7 +87,7 @@
                     </p>
 
                     @php
-                        $sizeOptions = ['XS','S','M','L'];
+                        $sizeOptions = ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
                         $oldColors = old('colors', []);
                         $oldSizes  = old('sizes', []);
                         $colorOptions = $colorOptions ?? [];

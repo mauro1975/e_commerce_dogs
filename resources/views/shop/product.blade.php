@@ -14,42 +14,61 @@
     margin: 0 auto;
     padding: 40px 24px 72px;
     align-items: start;
+    overflow-x: clip;
 }
 
 /* â”€â”€ Desktop image grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.pdp-media-col {
+    min-width: 0;
+    overflow: hidden;
+    scrollbar-width: none;
+}
+.pdp-media-col::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .pdp-media-desktop {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    max-width: 100%;
+    background: #fff;
 }
+.pdp-media-desktop.single-img .pdp-media-item { grid-column: 1 / -1; }
 .pdp-media-item {
-    aspect-ratio: 1;
     overflow: hidden;
-    border-radius: 4px;
-    background: #f5f5f3;
-    cursor: zoom-in;
+    background: #fff;
+    line-height: 0;
+    font-size: 0;
+    isolation: isolate;
 }
 .pdp-media-item img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform .4s ease;
+    height: auto;
+    max-height: min(75vh, 820px);
     display: block;
+    border: 0;
+    outline: none;
+    vertical-align: top;
+    /* evita la linea grigia sub-pixel sul bordo destro */
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
-.pdp-media-item:hover img { transform: scale(1.04); }
-/* Single image takes full width */
-.pdp-media-desktop.single-img .pdp-media-item { grid-column: 1 / -1; }
 
 /* â”€â”€ Mobile carousel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pdp-media-mobile { display: none; }
 .pdp-carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; scrollbar-width: none; }
 .pdp-carousel-track::-webkit-scrollbar { display: none; }
-.pdp-carousel-slide { flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 1; overflow: hidden; border-radius: 4px; background: #f5f5f3; }
-.pdp-carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pdp-carousel-slide {
+    flex: 0 0 100%; scroll-snap-align: start;
+    overflow: hidden; background: #fff; line-height: 0;
+}
+.pdp-carousel-slide img {
+    width: 100%; height: auto; max-height: min(72vh, 520px);
+    display: block; margin: 0 auto;
+}
 .pdp-thumbs-strip { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .pdp-thumbs-strip::-webkit-scrollbar { display: none; }
-.pdp-thumb { flex: 0 0 60px; height: 60px; border-radius: 4px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color .2s; background: #f5f5f3; }
-.pdp-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pdp-thumb { flex: 0 0 60px; height: 60px; border-radius: 4px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color .2s; background: #fff; }
+.pdp-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
 .pdp-thumb.active { border-color: var(--black); }
 
 /* â”€â”€ Right panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -134,10 +153,20 @@
 @media(max-width: 1024px) {
     .pdp-wrap { grid-template-columns: 1fr 360px; gap: 0 32px; }
 }
+@media (min-width: 769px) {
+    .pdp-media-mobile {
+        display: none !important;
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        margin: 0;
+        pointer-events: none;
+    }
+}
 @media(max-width: 768px) {
     .pdp-wrap { grid-template-columns: 1fr; padding: 20px 16px 48px; }
     .pdp-media-desktop { display: none; }
-    .pdp-media-mobile { display: block; margin-bottom: 8px; }
+    .pdp-media-mobile { display: block; margin-bottom: 8px; visibility: visible; height: auto; pointer-events: auto; }
     .pdp-panel { position: static; }
     .related-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
     .pdp-title { font-size: 22px; }
@@ -171,15 +200,15 @@
 <div class="pdp-wrap">
 
     {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• LEFT: image grid (desktop) / carousel (mobile) â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
-    <div>
-        {{-- Desktop grid --}}
+    <div class="pdp-media-col">
+        {{-- Desktop gallery --}}
         <div class="pdp-media-desktop {{ count($imgs) <= 1 ? 'single-img' : '' }}">
             @forelse($imgs as $img)
                 <div class="pdp-media-item">
                     <img src="{{ asset($img) }}" alt="{{ $product->name }}" loading="lazy">
                 </div>
             @empty
-                <div class="pdp-media-item single-img">
+                <div class="pdp-media-item">
                     <img src="{{ $placeholder }}" alt="{{ $product->name }}">
                 </div>
             @endforelse
@@ -296,7 +325,7 @@
             {{-- Qty + Add to cart --}}
             <div class="pdp-cart-row">
                 <div class="pdp-qty">
-                    <button type="button" onclick="changeQty(-1)">âˆ’</button>
+                    <button type="button" onclick="changeQty(-1)" aria-label="-">−</button>
                     <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="{{ $product->stock ?? 99 }}">
                     <button type="button" onclick="changeQty(1)">+</button>
                 </div>

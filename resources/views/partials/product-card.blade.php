@@ -5,7 +5,7 @@
                    cursor:pointer; transition:transform .15s, border-color .15s; flex-shrink:0;
                    padding:2px; background:#fff; box-sizing:border-box; overflow:hidden;
                    display:flex; align-items:center; justify-content:center; }
-    .pc-swatch img { width:100%; height:100%; object-fit:contain; object-position:center; display:block; pointer-events:none; }
+    .pc-swatch img { width:auto; height:auto; max-width:88%; max-height:88%; object-fit:contain; object-position:center; display:block; flex:0 0 auto; pointer-events:none; }
     .pc-swatch:hover { transform:scale(1.15); }
     .pc-swatch.active { border-color:var(--black) !important; transform:scale(1.15); }
 

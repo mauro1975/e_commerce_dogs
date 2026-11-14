@@ -166,6 +166,21 @@ return [
     'pdp_low_stock'      => 'Solo :count rimasti in magazzino',
     'pdp_related_title'  => 'Si abbina bene con',
     'pdp_you_may_like'   => 'Potrebbe Piacerti Anche',
+    'pdp_description_heading' => 'Descrizione',
+    'pdp_size_chart_title'    => 'Scheda taglie',
+    'pdp_size_chart_sub'      => 'Misure indicative del capo (cm)',
+    'pdp_size_chart_col_size' => 'Taglia',
+    'pdp_size_chart_col_back' => 'Schiena',
+    'pdp_size_chart_col_neck' => 'Collo',
+    'pdp_size_chart_col_chest'=> 'Petto',
+    'pdp_sweater_size_defaults' => [
+        'XXS' => ['back' => 22, 'neck' => 18, 'chest' => 26],
+        'XS'  => ['back' => 26, 'neck' => 20, 'chest' => 30],
+        'S'   => ['back' => 30, 'neck' => 22, 'chest' => 34],
+        'SM'  => ['back' => 32, 'neck' => 23, 'chest' => 36],
+        'M'   => ['back' => 34, 'neck' => 24, 'chest' => 38],
+        'L'   => ['back' => 38, 'neck' => 26, 'chest' => 42],
+    ],
 
     // ── Card prodotto ─────────────────────────────────────────────────
     'pc_colour'          => 'Colore',

@@ -160,6 +160,21 @@ return [
     'pdp_low_stock'      => 'Only :count left in stock',
     'pdp_related_title'  => 'Pairs well with',
     'pdp_you_may_like'   => 'You Might Also Like',
+    'pdp_description_heading' => 'Description',
+    'pdp_size_chart_title'    => 'Size guide',
+    'pdp_size_chart_sub'      => 'Approximate garment measurements (cm)',
+    'pdp_size_chart_col_size' => 'Size',
+    'pdp_size_chart_col_back' => 'Back',
+    'pdp_size_chart_col_neck' => 'Neck',
+    'pdp_size_chart_col_chest'=> 'Chest',
+    'pdp_sweater_size_defaults' => [
+        'XXS' => ['back' => 22, 'neck' => 18, 'chest' => 26],
+        'XS'  => ['back' => 26, 'neck' => 20, 'chest' => 30],
+        'S'   => ['back' => 30, 'neck' => 22, 'chest' => 34],
+        'SM'  => ['back' => 32, 'neck' => 23, 'chest' => 36],
+        'M'   => ['back' => 34, 'neck' => 24, 'chest' => 38],
+        'L'   => ['back' => 38, 'neck' => 26, 'chest' => 42],
+    ],
 
     // ── Product card ──────────────────────────────────────────────────
     'pc_colour'          => 'Colour',

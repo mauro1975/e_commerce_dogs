@@ -24,11 +24,147 @@
     scrollbar-width: none;
 }
 .pdp-media-col::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.pdp-media-caption {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+.pdp-media-caption-title {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.4vw, 26px);
+    font-weight: 400;
+    line-height: 1.25;
+    margin: 0 0 16px;
+    color: var(--black);
+}
+.pdp-media-caption-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px 24px;
+    align-items: stretch;
+}
+.pdp-media-caption-grid--split {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+}
+@media (max-width: 900px) {
+    .pdp-media-caption-grid--split { grid-template-columns: 1fr; }
+}
+.pdp-media-caption-copy {
+    min-width: 0;
+    padding: 16px 18px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background: #fff;
+}
+.pdp-media-caption-kicker {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: #888;
+}
+.pdp-media-caption-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #444;
+    margin: 0;
+    white-space: pre-line;
+}
+.pdp-size-chart {
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    background: #fafbfa;
+    padding: 16px 16px 14px;
+}
+.pdp-size-chart-title {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+    color: var(--black);
+}
+.pdp-size-chart-sub {
+    margin: 0 0 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.pdp-size-chart-body {
+    display: grid;
+    grid-template-columns: minmax(100px, 34%) 1fr;
+    gap: 12px;
+    align-items: center;
+}
+@media (max-width: 520px) {
+    .pdp-size-chart-body { grid-template-columns: 1fr; }
+}
+.pdp-size-chart-svg { width: 100%; max-width: 120px; height: auto; display: block; margin: 0 auto; }
+.pdp-size-chart-legend {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    font-size: 11px;
+    line-height: 1.55;
+    color: #666;
+}
+.pdp-size-chart-legend li { margin: 0; }
+.pdp-size-chart-legend span {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8f2ed;
+    color: #6fa398;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 4px;
+}
+.pdp-size-chart-table-wrap { overflow-x: auto; }
+.pdp-size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-family: var(--font-sans);
+}
+.pdp-size-chart-table th,
+.pdp-size-chart-table td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid #ececec;
+    white-space: nowrap;
+}
+.pdp-size-chart-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    font-weight: 600;
+}
+.pdp-size-chart-size { font-weight: 700; color: var(--black); }
+.pdp-size-chart-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 3.5em;
+}
+.pdp-size-chart-bar::before {
+    content: '';
+    display: inline-block;
+    width: var(--pct, 0%);
+    max-width: 48px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #9bc3b1, #6fa398);
+}
 .pdp-media-desktop {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 1fr;
-    align-items: stretch;
+    grid-auto-rows: auto;
+    align-items: start;
     gap: 8px;
     max-width: 100%;
     background: #fff;
@@ -41,20 +177,19 @@
     line-height: 0;
     font-size: 0;
     isolation: isolate;
-    aspect-ratio: 4 / 5;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(12px, 4%, 28px);
+    padding: 0 4px 4px;
     box-sizing: border-box;
 }
 .pdp-media-item img {
     width: auto;
     height: auto;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: min(58vh, 540px);
     object-fit: contain;
-    object-position: center center;
+    object-position: center top;
     display: block;
     flex: 0 0 auto;
     border: 0;
@@ -79,20 +214,20 @@
     overflow: hidden;
     background: #fff;
     line-height: 0;
-    aspect-ratio: 4 / 5;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: clamp(16px, 5%, 32px);
+    padding: 0 8px 8px;
     box-sizing: border-box;
+    min-height: 0;
 }
 .pdp-carousel-slide img {
     width: auto;
     height: auto;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: min(58vh, 520px);
     object-fit: contain;
-    object-position: center center;
+    object-position: center top;
     display: block;
     flex: 0 0 auto;
 }
@@ -255,6 +390,12 @@
         $firstColImgs = !empty($colors[0]['images']) ? $colors[0]['images'] : (!empty($colors[0]['image']) ? [$colors[0]['image']] : []);
         if (!empty($firstColImgs)) $imgs = $firstColImgs;
     }
+
+    $firstColorName = !empty($colors[0]['name']) ? $colors[0]['name'] : '';
+    $pdpVariantTitle = trim($product->name . ($firstColorName !== '' ? ' ' . $firstColorName : ''));
+    $pdpDescText = $product->description ? trim(strip_tags($product->description)) : '';
+    $showSizeChart = ($product->category?->slug === 'maglioncini') || !empty($sizes);
+    $captionSplit = $pdpDescText !== '' && $showSizeChart;
 @endphp
 
 <div class="pdp-wrap">
@@ -297,6 +438,25 @@
             </div>
             @endif
         </div>
+
+        @if($pdpVariantTitle !== '' || $pdpDescText !== '' || $showSizeChart)
+        <div class="pdp-media-caption">
+            @if($pdpVariantTitle !== '')
+                <h2 class="pdp-media-caption-title" id="pdpVariantTitle">{{ $pdpVariantTitle }}</h2>
+            @endif
+            <div class="pdp-media-caption-grid{{ $captionSplit ? ' pdp-media-caption-grid--split' : '' }}">
+                @if($pdpDescText !== '')
+                <div class="pdp-media-caption-copy">
+                    <p class="pdp-media-caption-kicker">{{ __('front.pdp_description_heading') }}</p>
+                    <p class="pdp-media-caption-desc">{{ $pdpDescText }}</p>
+                </div>
+                @endif
+                @if($showSizeChart)
+                    @include('partials.pdp-size-chart', ['product' => $product, 'sizes' => $sizes])
+                @endif
+            </div>
+        </div>
+        @endif
     </div>
 
     {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RIGHT: product panel â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
@@ -329,15 +489,6 @@
                 <span class="pdp-price-current">€{{ number_format($product->price, 2) }}</span>
             @endif
         </div>
-
-        {{-- Description as feature list --}}
-        @if($product->description)
-        <ul class="pdp-features">
-            @foreach(array_filter(explode("\n", $product->description)) as $line)
-                <li>{{ trim($line) }}</li>
-            @endforeach
-        </ul>
-        @endif
 
         <hr class="pdp-divider">
 
@@ -459,7 +610,15 @@
 @push('scripts')
 <script>
 const colorImages = @json($colorImgsMap);
+const pdpBaseName = @json($product->name);
 const pdpPreloaded = new Set();
+
+function updatePdpVariantTitle(colorName) {
+    const el = document.getElementById('pdpVariantTitle');
+    if (!el) return;
+  const name = (colorName || '').trim();
+  el.textContent = name ? `${pdpBaseName} ${name}` : pdpBaseName;
+}
 
 function preloadPdpUrl(url) {
     if (!url || pdpPreloaded.has(url)) return Promise.resolve(url);
@@ -500,6 +659,7 @@ function selectColor(name, el) {
     el.classList.add('active');
     document.getElementById('selectedColor').value = name;
     document.getElementById('colorLabel').textContent = name;
+    updatePdpVariantTitle(name);
     const imgs = colorImages[name] || [];
     if (imgs.length) updatePdpImages(imgs, name);
 }

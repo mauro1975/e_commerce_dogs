@@ -209,11 +209,23 @@ class AdminWebController extends Controller
             'is_best_seller'   => 'boolean',
             'seo_title'        => 'nullable|string|max:255',
             'seo_description'  => 'nullable|string',
+            'size_chart'       => 'nullable|string',
         ]);
 
         $data['is_active']      = $request->boolean('is_active');
         $data['is_featured']    = $request->boolean('is_featured');
         $data['is_best_seller'] = $request->boolean('is_best_seller');
+
+        $sizeChartRaw = trim((string) $request->input('size_chart', ''));
+        if ($sizeChartRaw === '') {
+            $data['size_chart'] = null;
+        } else {
+            $decoded = json_decode($sizeChartRaw, true);
+            if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decoded)) {
+                return back()->withErrors(['size_chart' => 'JSON scheda taglie non valido.'])->withInput();
+            }
+            $data['size_chart'] = $decoded;
+        }
 
         // Product gallery (add / remove individual photos)
         $galleryImages = is_array($product->images)

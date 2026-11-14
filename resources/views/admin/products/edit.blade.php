@@ -52,6 +52,12 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Scheda taglie (JSON, opzionale)</label>
+                        <textarea name="size_chart" class="form-control font-monospace" rows="5" placeholder='{"rows":[{"size":"S","back":30,"neck":22,"chest":34}]}'>{{ old('size_chart', $product->size_chart ? json_encode($product->size_chart, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '') }}</textarea>
+                        <div class="form-text">Lasciare vuoto per usare le misure predefinite in base alle taglie del prodotto (maglioncini).</div>
+                        @error('size_chart')<div class="text-danger small">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Slug</label>
                         <input type="text" name="slug" class="form-control" value="{{ old('slug', $product->slug) }}">
                     </div>

@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'category_id', 'name', 'name_en', 'slug', 'sku', 'description', 'description_en', 'price', 'compare_price',
-        'discount_percent', 'stock', 'image', 'images', 'available_colors', 'available_sizes',
+        'discount_percent', 'stock', 'image', 'images', 'available_colors', 'available_sizes', 'size_chart',
         'is_active', 'is_featured', 'is_best_seller', 'seo_title', 'seo_description',
     ];
 
@@ -19,6 +19,7 @@ class Product extends Model
         'images' => 'array',
         'available_colors' => 'array',
         'available_sizes' => 'array',
+        'size_chart' => 'array',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
         'is_best_seller' => 'boolean',

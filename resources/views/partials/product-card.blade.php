@@ -1,8 +1,11 @@
 @once
 <style>
     .pc-swatches { display:flex; flex-wrap:wrap; gap:5px; margin:8px 0 4px; }
-    .pc-swatch   { width:20px; height:20px; border-radius:50%; border:2px solid transparent;
-                   cursor:pointer; transition:transform .15s, border-color .15s; flex-shrink:0; }
+    .pc-swatch   { width:28px; height:34px; border-radius:4px; border:2px solid #e5e5e5;
+                   cursor:pointer; transition:transform .15s, border-color .15s; flex-shrink:0;
+                   padding:2px; background:#fff; box-sizing:border-box; overflow:hidden;
+                   display:flex; align-items:center; justify-content:center; }
+    .pc-swatch img { width:100%; height:100%; object-fit:contain; object-position:center; display:block; pointer-events:none; }
     .pc-swatch:hover { transform:scale(1.15); }
     .pc-swatch.active { border-color:var(--black) !important; transform:scale(1.15); }
 
@@ -53,6 +56,7 @@ function pcSubmit(e, pid, needSize) {
     // Ensure arrays (model casts handle this, but guard just in case)
     if (is_string($colors)) $colors = json_decode($colors, true) ?? [];
     if (is_string($sizes))  $sizes  = json_decode($sizes,  true) ?? [];
+    $catalogHex = \App\Models\ProductColor::hexMap();
     $firstColor = !empty($colors) ? (is_array($colors[0]) ? $colors[0]['name'] : $colors[0]) : null;
     $firstSize  = !empty($sizes)  ? $sizes[0] : null;
     $imgs       = is_array($product->images) ? $product->images : (json_decode($product->images, true) ?? []);
@@ -93,14 +97,20 @@ function pcSubmit(e, pid, needSize) {
             @foreach($colors as $c)
                 @php
                     $cName = is_array($c) ? $c['name'] : $c;
-                    $cHex  = is_array($c) ? ($c['hex'] ?? '#ccc') : '#ccc';
+                    $cHex = $catalogHex[$cName] ?? (is_array($c) ? ($c['hex'] ?? '#ccc') : '#ccc');
+                    $cImgs = is_array($c)
+                        ? (!empty($c['images']) ? $c['images'] : (!empty($c['image']) ? [$c['image']] : []))
+                        : [];
                 @endphp
                 <button type="button"
                         class="pc-swatch {{ $loop->first ? 'active' : '' }}"
-                        style="background:{{ $cHex }}; outline-offset:2px;"
+                        style="@if(empty($cImgs)) background-color:{{ $cHex }}; @endif outline-offset:2px;"
                         title="{{ $cName }}"
                         data-color="{{ $cName }}"
                         onclick="pcSelectColor(this, {{ $pid }})">
+                    @if(!empty($cImgs))
+                        <img src="{{ asset($cImgs[0]) }}" alt="">
+                    @endif
                 </button>
             @endforeach
         </div>

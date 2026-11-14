@@ -33,37 +33,64 @@
 }
 .pdp-media-desktop.single-img .pdp-media-item { grid-column: 1 / -1; }
 .pdp-media-item {
+    position: relative;
     overflow: hidden;
     background: #fff;
     line-height: 0;
     font-size: 0;
     isolation: isolate;
+    aspect-ratio: 4 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 4%, 28px);
+    box-sizing: border-box;
 }
 .pdp-media-item img {
     width: 100%;
-    height: auto;
-    max-height: min(75vh, 820px);
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center center;
     display: block;
     border: 0;
     outline: none;
-    vertical-align: top;
-    /* evita la linea grigia sub-pixel sul bordo destro */
+    opacity: 1;
+    transition: opacity 0.2s ease;
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
+.pdp-media-item img.pdp-img-pending { opacity: 0; }
+.pdp-carousel-slide img.pdp-img-pending { opacity: 0; }
+.pdp-carousel-slide img { transition: opacity 0.2s ease; }
 
 /* â”€â”€ Mobile carousel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pdp-media-mobile { display: none; }
 .pdp-carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; scrollbar-width: none; }
 .pdp-carousel-track::-webkit-scrollbar { display: none; }
 .pdp-carousel-slide {
-    flex: 0 0 100%; scroll-snap-align: start;
-    overflow: hidden; background: #fff; line-height: 0;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow: hidden;
+    background: #fff;
+    line-height: 0;
+    aspect-ratio: 4 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 5%, 32px);
+    box-sizing: border-box;
 }
 .pdp-carousel-slide img {
-    width: 100%; height: auto; max-height: min(72vh, 520px);
-    display: block; margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: min(72vh, 520px);
+    object-fit: contain;
+    object-position: center center;
+    display: block;
 }
 .pdp-thumbs-strip { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .pdp-thumbs-strip::-webkit-scrollbar { display: none; }
@@ -104,14 +131,39 @@
 /* Color swatches */
 .pdp-color-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
 .pdp-color-swatch {
-    width: 44px; height: 44px; border-radius: 4px;
-    cursor: pointer; border: 2px solid transparent;
+    width: 52px;
+    height: 64px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid #e5e5e5;
     transition: border-color .18s, transform .15s;
     position: relative;
+    background: #fff;
+    padding: 4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
-.pdp-color-swatch:hover { transform: scale(1.08); }
+.pdp-color-swatch:hover { transform: scale(1.06); }
 .pdp-color-swatch.active { border-color: var(--black); outline: 2px solid var(--black); outline-offset: 2px; }
-.pdp-color-swatch .swatch-inner { width: 100%; height: 100%; border-radius: 2px; }
+.pdp-color-swatch .swatch-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+.pdp-color-swatch .swatch-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+    pointer-events: none;
+}
 
 /* Qty + cart */
 .pdp-cart-row { display: flex; gap: 12px; margin-bottom: 12px; }
@@ -181,6 +233,7 @@
     $placeholder = 'https://placehold.co/600x600/f8f8f6/9ad7a0?text='.urlencode($product->name);
     $colors = is_array($product->available_colors) ? $product->available_colors : (json_decode($product->available_colors ?? '[]', true) ?? []);
     $sizes  = is_array($product->available_sizes)  ? $product->available_sizes  : (json_decode($product->available_sizes  ?? '[]', true) ?? []);
+    $catalogHex = \App\Models\ProductColor::hexMap();
 
     // Per-color image map for JS (full asset URLs)
     $colorImgsMap = [];
@@ -205,7 +258,7 @@
         <div class="pdp-media-desktop {{ count($imgs) <= 1 ? 'single-img' : '' }}">
             @forelse($imgs as $img)
                 <div class="pdp-media-item">
-                    <img src="{{ asset($img) }}" alt="{{ $product->name }}" loading="lazy">
+                    <img src="{{ asset($img) }}" alt="{{ $product->name }}" loading="eager" decoding="async" fetchpriority="high">
                 </div>
             @empty
                 <div class="pdp-media-item">
@@ -293,11 +346,20 @@
                 </div>
                 <div class="pdp-color-list">
                     @foreach($colors as $i => $color)
+                        @php
+                            $cName = $color['name'] ?? '';
+                            $cHex = $catalogHex[$cName] ?? ($color['hex'] ?? '#ccc');
+                            $cImgs = !empty($color['images']) ? $color['images'] : (!empty($color['image']) ? [$color['image']] : []);
+                        @endphp
                         <div class="pdp-color-swatch {{ $i===0?'active':'' }}"
-                             title="{{ $color['name'] ?? '' }}"
-                             onclick="selectColor('{{ $color['name'] ?? '' }}', this)"
-                             data-color="{{ $color['name'] ?? '' }}">
-                            <div class="swatch-inner" style="background:{{ $color['hex'] ?? '#ccc' }};"></div>
+                             title="{{ $cName }}"
+                             onclick="selectColor(@js($cName), this)"
+                             data-color="{{ $cName }}">
+                            <div class="swatch-inner" @if(empty($cImgs)) style="background-color:{{ $cHex }};" @endif>
+                                @if(!empty($cImgs))
+                                    <img src="{{ asset($cImgs[0]) }}" alt="{{ $cName }}" loading="lazy" decoding="async">
+                                @endif
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -390,40 +452,125 @@
 @push('scripts')
 <script>
 const colorImages = @json($colorImgsMap);
+const pdpPreloaded = new Set();
+
+function preloadPdpUrl(url) {
+    if (!url || pdpPreloaded.has(url)) return Promise.resolve(url);
+    return new Promise(resolve => {
+        const im = new Image();
+        im.decoding = 'async';
+        const done = () => { pdpPreloaded.add(url); resolve(url); };
+        im.onload = done;
+        im.onerror = done;
+        im.src = url;
+        if (im.complete) done();
+    });
+}
+
+function preloadAllColorImages() {
+    const urls = new Set();
+    Object.values(colorImages).forEach(list => (list || []).forEach(u => urls.add(u)));
+    return Promise.all([...urls].map(preloadPdpUrl));
+}
+
+function setImgSrc(img, src, alt) {
+    if (!img || img.getAttribute('src') === src) return;
+    img.classList.add('pdp-img-pending');
+    img.alt = alt;
+    const reveal = () => {
+        img.classList.remove('pdp-img-pending');
+        img.removeEventListener('load', reveal);
+        img.removeEventListener('error', reveal);
+    };
+    img.addEventListener('load', reveal);
+    img.addEventListener('error', reveal);
+    img.src = src;
+    if (img.complete) reveal();
+}
+
 function selectColor(name, el) {
     document.querySelectorAll('.pdp-color-swatch').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('selectedColor').value = name;
     document.getElementById('colorLabel').textContent = name;
-    // Swap images for this color
     const imgs = colorImages[name] || [];
     if (imgs.length) updatePdpImages(imgs, name);
 }
-function updatePdpImages(imgs, label) {
-    // Desktop grid
-    const desktop = document.querySelector('.pdp-media-desktop');
-    if (desktop) {
-        desktop.className = 'pdp-media-desktop' + (imgs.length <= 1 ? ' single-img' : '');
-        desktop.innerHTML = imgs.map(src =>
-            `<div class="pdp-media-item"><img src="${src}" alt="${label}" loading="lazy"></div>`
+
+async function updatePdpImages(imgs, label) {
+    await Promise.all(imgs.map(preloadPdpUrl));
+
+  const desktop = document.querySelector('.pdp-media-desktop');
+  if (desktop) {
+    desktop.className = 'pdp-media-desktop' + (imgs.length <= 1 ? ' single-img' : '');
+    const items = [...desktop.querySelectorAll('.pdp-media-item')];
+    if (items.length === imgs.length && items.length > 0) {
+      items.forEach((item, i) => {
+        let img = item.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          img.loading = 'eager';
+          img.decoding = 'async';
+          item.appendChild(img);
+        }
+        setImgSrc(img, imgs[i], label);
+      });
+    } else {
+      desktop.innerHTML = imgs.map(src =>
+        `<div class="pdp-media-item"><img src="${src}" alt="" loading="eager" decoding="async"></div>`
+      ).join('');
+      desktop.querySelectorAll('img').forEach((img, i) => { img.alt = label; });
+    }
+  }
+
+  const track = document.getElementById('mobileCarousel');
+  if (track) {
+    const slides = [...track.querySelectorAll('.pdp-carousel-slide')];
+    if (slides.length === imgs.length && slides.length > 0) {
+      slides.forEach((slide, i) => {
+        let img = slide.querySelector('img');
+        if (!img) {
+          img = document.createElement('img');
+          img.loading = 'eager';
+          img.decoding = 'async';
+          slide.appendChild(img);
+        }
+        setImgSrc(img, imgs[i], `${label} ${i + 1}`);
+      });
+    } else {
+      track.innerHTML = imgs.map((src, i) =>
+        `<div class="pdp-carousel-slide"><img src="${src}" alt="" loading="eager" decoding="async"></div>`
+      ).join('');
+      track.querySelectorAll('img').forEach((img, i) => { img.alt = `${label} ${i + 1}`; });
+    }
+  }
+
+  const strip = document.getElementById('mobileThumbStrip');
+  if (strip) {
+    strip.style.display = imgs.length > 1 ? '' : 'none';
+    if (imgs.length > 1) {
+      const thumbs = [...strip.querySelectorAll('.pdp-thumb')];
+      if (thumbs.length === imgs.length) {
+        thumbs.forEach((t, i) => {
+          t.classList.toggle('active', i === 0);
+          t.dataset.index = i;
+          t.onclick = () => scrollToSlide(i);
+          let img = t.querySelector('img');
+          if (!img) { img = document.createElement('img'); t.appendChild(img); }
+          setImgSrc(img, imgs[i], '');
+        });
+      } else {
+        strip.innerHTML = imgs.map((src, i) =>
+          `<div class="pdp-thumb ${i===0?'active':''}" data-index="${i}" onclick="scrollToSlide(${i})"><img src="${src}" alt="" loading="eager" decoding="async"></div>`
         ).join('');
+      }
+    } else {
+      strip.innerHTML = '';
     }
-    // Mobile carousel
-    const track = document.getElementById('mobileCarousel');
-    if (track) {
-        track.innerHTML = imgs.map((src, i) =>
-            `<div class="pdp-carousel-slide"><img src="${src}" alt="${label} ${i+1}" loading="${i===0?'eager':'lazy'}"></div>`
-        ).join('');
-    }
-    // Thumb strip
-    const strip = document.getElementById('mobileThumbStrip');
-    if (strip) {
-        strip.style.display = imgs.length > 1 ? '' : 'none';
-        strip.innerHTML = imgs.length > 1 ? imgs.map((src, i) =>
-            `<div class="pdp-thumb ${i===0?'active':''}" data-index="${i}" onclick="scrollToSlide(${i})"><img src="${src}" alt=""></div>`
-        ).join('') : '';
-    }
+  }
 }
+
+document.addEventListener('DOMContentLoaded', () => { preloadAllColorImages(); });
 function selectSize(size, el) {
     document.querySelectorAll('.pdp-size-pill').forEach(b => b.classList.remove('active'));
     el.classList.add('active');

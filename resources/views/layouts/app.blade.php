@@ -14,7 +14,7 @@
     <style>html,body{margin:0!important;padding:0!important;display:block;}</style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
       
@@ -24,20 +24,25 @@
             font-weight: normal;
             font-style: normal;
         }
-        :root { --green:#9BC3B1; --green-dark:#6fa398; --green-light:#d4e8e2; --white:#ffffff; --black:#1a1a1a; --gray:#f5f5f5; --text-muted:#777; --border:#e8e8e8; }
+        :root {
+            --green:#9BC3B1; --green-dark:#6fa398; --green-light:#d4e8e2; --white:#ffffff; --black:#1a1a1a; --gray:#f5f5f5; --text-muted:#777; --border:#e8e8e8;
+            --font-sans:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-serif:'Instrument Serif', Georgia, serif;
+        }
         * { box-sizing:border-box; }
         html { margin:0; padding:0; }
-        body { font-family:'Inter',sans-serif; background:#fff; color:var(--black); margin:0; padding:0; }
-        h1,h2,h3,h4,h5 { font-family:'Playfair Display',serif; }
+        body { font-family:var(--font-sans); background:#fff; color:var(--black); margin:0; padding:0; }
+        h1,h2,h3,h4,h5,h6 { font-family:var(--font-serif); font-weight:400; letter-spacing:-0.01em; }
+        .nav-links a, .sort-select, .btn-checkout, .btn-primary-green, .btn-outline-green, .btn-black,
+        .mobile-nav a, .announcement-bar, input, select, textarea, button:not(.pc-swatch):not(.pc-size) {
+            font-family:var(--font-sans);
+        }
+        .font-logo { font-family:'Simplified Arabic Fixed', serif; }
         .announcement-bar { background:var(--green); color:#fff; text-align:center; padding:8px; font-size:13px; letter-spacing:0.5px; margin:0; margin-top: 0 !important; }
         .site-header { position:sticky; top:0; z-index:1000; background:#fff; border-bottom:1px solid var(--border); }
         .navbar-main { display:flex; align-items:center; justify-content:space-between; padding:16px 40px; max-width:1400px; margin:0 auto; }
-        .navbar-brand-logo { display:flex; flex-direction:column; align-items:center; gap:2px; font-family:'Simplified Arabic Fixed',serif; font-size:30px; font-weight:700; color:#9bc3b1; text-decoration:none; letter-spacing:0; line-height:1; }
+        .navbar-brand-logo { display:inline-flex; align-items:center; font-family:'Simplified Arabic Fixed',serif; font-size:30px; font-weight:700; color:#9bc3b1; text-decoration:none; letter-spacing:0; line-height:1; }
         .navbar-brand-logo:hover { color:#6fa398; text-decoration:none; }
-        .navbar-brand-logo:hover .rosmarino-dog-icon { color:#6fa398; }
-        .rosmarino-dog-icon { color:#9bc3b1; display:block; flex-shrink:0; }
-        .navbar-brand-dog { width:72px; height:auto; }
-        #page-loader-dog { width:150px; height:auto; margin-top:4px; }
         .nav-links { display:flex; gap:32px; list-style:none; margin:0; padding:0; }
         .nav-links a { color:var(--black); text-decoration:none; font-size:13px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; transition:color .2s; }
         .nav-links a:hover,.nav-links a.active { color:var(--green-dark); }
@@ -78,11 +83,37 @@
         .product-price { font-weight:600; color:var(--black); font-size:14px; }
         .product-price-old { text-decoration:line-through; color:var(--text-muted); font-size:13px; margin-right:6px; }
         .badge-discount { background:var(--green); color:#fff; font-size:11px; padding:2px 8px; border-radius:2px; font-weight:600; }
-        .cat-card { position:relative; overflow:hidden; border-radius:4px; cursor:pointer; display:block; text-decoration:none; }
-        .cat-card img { width:100%; aspect-ratio:3/4; object-fit:cover; transition:transform .5s; }
+        .cat-card { position:relative; overflow:hidden; border-radius:4px; cursor:pointer; display:block; text-decoration:none; background:#1a1a1a; }
+        .cat-card img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; transition:transform .5s ease, filter .35s ease; }
+        .cat-card::after {
+            content:'';
+            position:absolute; inset:0;
+            background:rgba(0,0,0,0.32);
+            z-index:1;
+            transition:background .35s ease;
+            pointer-events:none;
+        }
         .cat-card:hover img { transform:scale(1.06); }
-        .cat-card-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,0.55)); color:#fff; padding:32px 16px 16px; }
-        .cat-card-label h3 { font-size:20px; font-weight:600; margin:0; }
+        .cat-card:hover::after { background:rgba(0,0,0,0.26); }
+        .cat-card-label {
+            position:absolute; inset:0; z-index:2;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            text-align:center;
+            padding:24px 20px;
+            color:#fff;
+            pointer-events:none;
+        }
+        .cat-card-label h3 {
+            font-size:clamp(17px,2.2vw,22px);
+            font-weight:600;
+            margin:0;
+            letter-spacing:.04em;
+            text-transform:uppercase;
+            text-shadow:0 2px 16px rgba(0,0,0,0.45);
+        }
+        .cat-card-label p {
+            text-shadow:0 1px 10px rgba(0,0,0,0.4);
+        }
         .flash-container { position:fixed; top:80px; right:20px; z-index:9999; width:320px; }
         .cookie-banner {
             position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
@@ -151,7 +182,6 @@
 <div id="page-loader">
     <div id="page-loader-inner">
         <span id="page-loader-brand">.rosmarino</span>
-        @include('partials.bassotto-icon', ['class' => 'page-loader-dog', 'id' => 'page-loader-dog', 'stroke' => '1.6'])
         <div id="page-loader-bar-wrap">
             <div id="page-loader-bar"></div>
         </div>
@@ -166,10 +196,7 @@
         <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
-        <a href="{{ route('home') }}" class="navbar-brand-logo">
-            <span>.rosmarino</span>
-            @include('partials.bassotto-icon', ['class' => 'navbar-brand-dog', 'stroke' => '1.5'])
-        </a>
+        <a href="{{ route('home') }}" class="navbar-brand-logo">.rosmarino</a>
         <ul class="nav-links">
             <li><a href="{{ route('collection') }}" class="{{ request()->routeIs('collection*','category*') ? 'active' : '' }}">{{ __('front.nav_collection') }}</a></li>
             <li><a href="{{ route('best-sellers') }}" class="{{ request()->routeIs('best-sellers') ? 'active' : '' }}">{{ __('front.nav_best_sellers') }}</a></li>
@@ -213,7 +240,7 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-sidebar-header">
-        <h5 class="mb-0" style="font-size:18px;">{{ __('front.cart_title') }} <span class="text-muted" style="font-size:14px;font-family:Inter;">({{ $cartCount }})</span></h5>
+        <h5 class="mb-0" style="font-size:18px;">{{ __('front.cart_title') }} <span class="text-muted" style="font-size:14px;font-family:var(--font-sans);">({{ $cartCount }})</span></h5>
         <button class="btn-close" id="cartClose"></button>
     </div>
     <div class="cart-sidebar-body">

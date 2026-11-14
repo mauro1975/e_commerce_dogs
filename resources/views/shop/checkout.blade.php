@@ -31,7 +31,7 @@
 
             {{-- Contact --}}
             <div class="checkout-section">
-                <h5 style="font-family:'Inter',sans-serif;font-weight:700;margin-bottom:20px;">{{ __('front.checkout_contact') }}</h5>
+                <h5 style="font-family:var(--font-sans);font-weight:700;margin-bottom:20px;">{{ __('front.checkout_contact') }}</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label" style="font-size:13px;font-weight:600;">{{ __('front.checkout_first_name') }} *</label>
@@ -60,7 +60,7 @@
 
             {{-- Shipping --}}
             <div class="checkout-section">
-                <h5 style="font-family:'Inter',sans-serif;font-weight:700;margin-bottom:20px;">{{ __('front.checkout_shipping') }}</h5>
+                <h5 style="font-family:var(--font-sans);font-weight:700;margin-bottom:20px;">{{ __('front.checkout_shipping') }}</h5>
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label" style="font-size:13px;font-weight:600;">{{ __('front.checkout_address') }} *</label>
@@ -98,7 +98,7 @@
 
             {{-- Notes --}}
             <div class="checkout-section">
-                <h5 style="font-family:'Inter',sans-serif;font-weight:700;margin-bottom:16px;">{{ __('front.checkout_notes') }} <span style="font-weight:400;font-size:14px;color:var(--text-muted);">{{ __('front.checkout_notes_opt') }}</span></h5>
+                <h5 style="font-family:var(--font-sans);font-weight:700;margin-bottom:16px;">{{ __('front.checkout_notes') }} <span style="font-weight:400;font-size:14px;color:var(--text-muted);">{{ __('front.checkout_notes_opt') }}</span></h5>
                 <textarea name="notes" class="form-control" rows="3" placeholder="{{ __('front.checkout_notes_ph') }}">{{ old('notes') }}</textarea>
             </div>
 
@@ -111,7 +111,7 @@
     {{-- Right: Order Summary --}}
     <div class="order-summary-col">
         <div class="checkout-section" style="position:sticky;top:100px;">
-            <h5 style="font-family:'Inter',sans-serif;font-weight:700;margin-bottom:20px;">{{ __('front.checkout_summary') }}</h5>
+            <h5 style="font-family:var(--font-sans);font-weight:700;margin-bottom:20px;">{{ __('front.checkout_summary') }}</h5>
 
             @foreach($cart as $key => $item)
             <div class="order-item-row">

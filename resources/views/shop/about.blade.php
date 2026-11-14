@@ -20,8 +20,8 @@
     .about-hero-text { font-size:17px; line-height:1.85; text-align:left; }
     .about-hero-text p { margin:0 0 1.1em; color:#6fa398; }
     .about-hero-text .about-hero-lead { font-size:18px; }
-    .about-hero-text h3 { font-family:'Playfair Display',serif; font-size:22px; color:var(--black); margin:2em 0 .75em; font-weight:600; }
-    .about-hero-text h4 { font-size:15px; letter-spacing:.5px; text-transform:uppercase; color:var(--green-dark); margin:1.5em 0 .75em; font-weight:600; font-family:'Inter',sans-serif; }
+    .about-hero-text h3 { font-family:var(--font-serif); font-size:26px; color:var(--black); margin:2em 0 .75em; font-weight:400; }
+    .about-hero-text h4 { font-size:14px; letter-spacing:.5px; text-transform:uppercase; color:var(--green-dark); margin:1.5em 0 .75em; font-weight:600; font-family:var(--font-sans); }
     .about-hero-text ul { margin:0 0 1.25em; padding-left:1.2em; color:#6fa398; }
     .about-hero-text li { margin-bottom:.45em; color:#6fa398; }
 </style>

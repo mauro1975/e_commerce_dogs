@@ -45,13 +45,13 @@
     .hero-content .hero-sub     { animation:hero-fade-up .7s ease both; animation-delay:.55s; }
     .hero-content .hero-actions { animation:hero-fade-up .7s ease both; animation-delay:.75s; }
 
-    .cat-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+    .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:992px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:576px){.cat-grid{grid-template-columns:1fr 1fr;}}
 
     .features-strip { background:var(--green-light); padding:40px; }
     .features-strip .feature i { font-size:28px; color:var(--green-dark); margin-bottom:10px; display:block; }
-    .features-strip .feature h6 { font-weight:700; font-size:14px; margin-bottom:4px; font-family:'Inter',sans-serif; }
+    .features-strip .feature h6 { font-weight:600; font-size:14px; margin-bottom:4px; font-family:var(--font-sans); }
     .features-strip .feature p { font-size:13px; color:var(--text-muted); margin:0; }
 
     .bs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }

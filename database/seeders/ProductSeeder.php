@@ -10,11 +10,11 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $collars    = Category::where('slug', 'collars')->first();
-        $leashes    = Category::where('slug', 'leashes')->first();
-        $coats      = Category::where('slug', 'coats')->first();
-        $harnesses  = Category::where('slug', 'harnesses')->first();
-        $bagHolders = Category::where('slug', 'bag-holders')->first();
+        $collars     = Category::where('slug', 'collars')->first();
+        $coats       = Category::where('slug', 'coats')->first();
+        $leashes     = Category::where('slug', 'leashes')->first();
+        $bagHolders  = Category::where('slug', 'bag-holders')->first();
+        $harnesses   = Category::where('slug', 'harnesses')->first();
 
         $colorSets = [
             'classic' => json_encode([
@@ -100,7 +100,7 @@ class ProductSeeder extends Seeder
                 'is_best_seller'    => false,
                 'discount_percent'  => 0,
             ],
-            // Coats
+            // Demo cappotti (categoria legacy, non in Maglioncini)
             [
                 'category_id'       => $coats?->id,
                 'name'              => 'Cappotto imbottito invernale',
@@ -111,8 +111,8 @@ class ProductSeeder extends Seeder
                 'price'             => 49.99,
                 'available_colors'  => $colorSets['neutral'],
                 'available_sizes'   => $sizes,
-                'is_active'         => true,
-                'is_featured'       => true,
+                'is_active'         => false,
+                'is_featured'       => false,
                 'is_best_seller'    => false,
                 'discount_percent'  => 15,
             ],
@@ -126,12 +126,12 @@ class ProductSeeder extends Seeder
                 'price'             => 39.99,
                 'available_colors'  => $colorSets['pastels'],
                 'available_sizes'   => $sizes,
-                'is_active'         => true,
+                'is_active'         => false,
                 'is_featured'       => false,
-                'is_best_seller'    => true,
+                'is_best_seller'    => false,
                 'discount_percent'  => 0,
             ],
-            // Harnesses
+            // Pettorine (categoria legacy, disattivata dal CategorySeeder)
             [
                 'category_id'       => $harnesses?->id,
                 'name'              => 'Pettorina anti-tiro step-in',

@@ -40,12 +40,12 @@
                            transition:transform .45s ease; }
     .cat-product-body { padding:16px 18px 20px; flex:1; display:flex; flex-direction:column; }
     .cat-product-name {
-        font-family:'Playfair Display',serif;
-        font-size:17px; font-weight:600; margin:0 0 8px; color:var(--black); line-height:1.35;
+        font-family:var(--font-serif);
+        font-size:22px; font-weight:400; margin:0 0 8px; color:var(--black); line-height:1.25;
     }
-    .cat-product-price { font-size:16px; font-weight:600; margin:0 0 10px; color:var(--black); letter-spacing:.02em; }
+    .cat-product-desc { font-size:13px; line-height:1.65; color:var(--text-muted); margin:0 0 12px; }
+    .cat-product-price { font-size:16px; font-weight:600; margin:0; color:var(--black); letter-spacing:.02em; }
     .cat-product-price-old { font-weight:400; color:var(--text-muted); text-decoration:line-through; margin-right:6px; font-size:14px; }
-    .cat-product-desc { font-size:13px; line-height:1.65; color:var(--text-muted); margin:0; margin-top:auto; }
 </style>
 @endsection
 
@@ -103,15 +103,15 @@
                     </div>
                     <div class="cat-product-body">
                         <h2 class="cat-product-name">{{ $product->name }}</h2>
+                        @if($desc !== '')
+                            <p class="cat-product-desc">{{ Str::limit($desc, 140) }}</p>
+                        @endif
                         <p class="cat-product-price">
                             @if($product->discount_percent > 0)
                                 <span class="cat-product-price-old">€{{ number_format($product->price, 2) }}</span>
                             @endif
                             €{{ number_format($product->final_price, 2) }}
                         </p>
-                        @if($desc !== '')
-                            <p class="cat-product-desc">{{ Str::limit($desc, 140) }}</p>
-                        @endif
                     </div>
                 </a>
             @endforeach

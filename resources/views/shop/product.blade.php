@@ -737,7 +737,17 @@ async function updatePdpImages(imgs, label) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => { preloadAllColorImages(); });
+document.addEventListener('DOMContentLoaded', () => {
+    preloadAllColorImages();
+    const colorParam = new URLSearchParams(window.location.search).get('color');
+    if (colorParam) {
+        document.querySelectorAll('.pdp-color-swatch').forEach((swatch) => {
+            if (swatch.dataset.color === colorParam) {
+                selectColor(colorParam, swatch);
+            }
+        });
+    }
+});
 function selectSize(size, el) {
     document.querySelectorAll('.pdp-size-pill').forEach(b => b.classList.remove('active'));
     el.classList.add('active');

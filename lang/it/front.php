@@ -151,6 +151,7 @@ return [
     'cat_sort_price_asc'        => 'Prezzo: dal più basso',
     'cat_sort_price_desc'       => 'Prezzo: dal più alto',
     'cat_sort_newest'           => 'Più recenti',
+    'cat_sweater_cashmere'      => '100% Cashmere',
     'cat_size_tag'              => ':label :value',
     'cat_remove_filters'        => 'Rimuovi filtri',
     'cat_empty_title'           => 'Nessun prodotto corrisponde ai filtri',

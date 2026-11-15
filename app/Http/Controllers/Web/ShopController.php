@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ShopController extends Controller
 {
@@ -28,9 +29,73 @@ class ShopController extends Controller
             default      => $query->orderBy('name'),
         };
 
-        $products = $query->paginate(12)->withQueryString();
+        $categoryItems = collect();
 
-        return view('shop.category', compact('category', 'products'));
+        if ($slug === 'maglioncini') {
+            $products = $query->get();
+            $categoryItems = $this->maglionciniItemsByColor($products);
+            $productsPaginated = false;
+        } else {
+            $products = $query->paginate(12)->withQueryString();
+            $productsPaginated = true;
+        }
+
+        return view('shop.category', compact('category', 'products', 'productsPaginated', 'categoryItems'));
+    }
+
+    /**
+     * One grid card per sweater color (image + title include color name).
+     *
+     * @param  Collection<int, Product>  $products
+     * @return Collection<int, array{product: Product, color: ?string, thumb: ?string}>
+     */
+    private function maglionciniItemsByColor(Collection $products): Collection
+    {
+        $items = collect();
+
+        foreach ($products as $product) {
+            $colors = $product->available_colors ?? [];
+            if (! is_array($colors)) {
+                $colors = json_decode($colors, true) ?? [];
+            }
+
+            $fallbackImgs = is_array($product->images)
+                ? $product->images
+                : (json_decode($product->images ?? '[]', true) ?? []);
+
+            if ($colors === []) {
+                $items->push([
+                    'product' => $product,
+                    'color'   => null,
+                    'thumb'   => $fallbackImgs[0] ?? $product->image,
+                ]);
+                continue;
+            }
+
+            foreach ($colors as $col) {
+                $colorName = is_array($col) ? trim((string) ($col['name'] ?? '')) : trim((string) $col);
+                if ($colorName === '') {
+                    continue;
+                }
+
+                $colorImgs = [];
+                if (is_array($col)) {
+                    $colorImgs = ! empty($col['images'])
+                        ? $col['images']
+                        : (! empty($col['image']) ? [$col['image']] : []);
+                }
+
+                $thumb = $colorImgs[0] ?? $fallbackImgs[0] ?? $product->image;
+
+                $items->push([
+                    'product' => $product,
+                    'color'   => $colorName,
+                    'thumb'   => $thumb,
+                ]);
+            }
+        }
+
+        return $items;
     }
 
     public function product(string $slug)

@@ -30,8 +30,8 @@
             --font-serif:'Instrument Serif', Georgia, serif;
         }
         * { box-sizing:border-box; }
-        html { margin:0; padding:0; }
-        body { font-family:var(--font-sans); background:#fff; color:var(--black); margin:0; padding:0; }
+        html { margin:0; padding:0; background:#f0fff8; }
+        body { font-family:var(--font-sans); background:#f0fff8; color:var(--black); margin:0; padding:0; }
         h1,h2,h3,h4,h5,h6 { font-family:var(--font-serif); font-weight:400; letter-spacing:-0.01em; }
         .nav-links a, .sort-select, .btn-checkout, .btn-primary-green, .btn-outline-green, .btn-black,
         .mobile-nav a, .announcement-bar, input, select, textarea, button:not(.pc-swatch):not(.pc-size) {

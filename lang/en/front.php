@@ -145,6 +145,7 @@ return [
     'cat_sort_price_asc'        => 'Price: Low to High',
     'cat_sort_price_desc'       => 'Price: High to Low',
     'cat_sort_newest'           => 'Newest',
+    'cat_sweater_cashmere'      => '100% Cashmere',
     'cat_size_tag'              => ':label :value',
     'cat_remove_filters'        => 'Remove filters',
     'cat_empty_title'           => 'No products match the filters',

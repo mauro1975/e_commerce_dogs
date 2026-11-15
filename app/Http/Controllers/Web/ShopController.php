@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\PdpSizeGuide;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -107,7 +108,26 @@ class ShopController extends Controller
             ->limit(4)
             ->get();
 
-        return view('shop.product', compact('product', 'related'));
+        $sizes = is_array($product->available_sizes)
+            ? $product->available_sizes
+            : (json_decode($product->available_sizes ?? '[]', true) ?? []);
+
+        $showSizeChart = ($product->category?->slug === 'maglioncini') || ! empty($sizes);
+        $sizeGuide = $showSizeChart
+            ? PdpSizeGuide::build($product, $sizes)
+            : ['rows' => [], 'guideRows' => [], 'active' => false, 'maxChest' => 1.0];
+
+        $pdpGuideRows = $sizeGuide['guideRows'];
+        $pdpSizeGuideActive = $sizeGuide['active'];
+
+        return view('shop.product', compact(
+            'product',
+            'related',
+            'sizes',
+            'showSizeChart',
+            'pdpGuideRows',
+            'pdpSizeGuideActive'
+        ));
     }
 
     public function bestSellers()
@@ -125,5 +145,10 @@ class ShopController extends Controller
     public function about()
     {
         return view('shop.about');
+    }
+
+    public function shippingReturns()
+    {
+        return view('shop.shipping_returns');
     }
 }

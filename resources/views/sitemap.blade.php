@@ -26,6 +26,12 @@
     </url>
 
     <url>
+        <loc>{{ route('shipping-returns') }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
         <loc>{{ route('about') }}</loc>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>

@@ -28,6 +28,7 @@ Route::get("/product/{slug}", [ShopController::class, "product"])->name("product
 Route::get("/best-sellers", [ShopController::class, "bestSellers"])->name("best-sellers");
 Route::get("/photos", [ShopController::class, "photos"])->name("photos");
 Route::get("/about", [ShopController::class, "about"])->name("about");
+Route::get("/spedizioni-resi", [ShopController::class, "shippingReturns"])->name("shipping-returns");
 
 Route::post("/cart/add", [CartWebController::class, "add"])->name("cart.add");
 Route::post("/cart/update", [CartWebController::class, "update"])->name("cart.update");

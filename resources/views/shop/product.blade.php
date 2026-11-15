@@ -43,12 +43,6 @@
     gap: 16px 24px;
     align-items: stretch;
 }
-.pdp-media-caption-grid--split {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-}
-@media (max-width: 900px) {
-    .pdp-media-caption-grid--split { grid-template-columns: 1fr; }
-}
 .pdp-media-caption-copy {
     min-width: 0;
     padding: 16px 18px;
@@ -71,105 +65,143 @@
     margin: 0;
     white-space: pre-line;
 }
-.pdp-size-chart {
-    border: 1px solid #e8e8e8;
-    border-radius: 12px;
-    background: #fafbfa;
-    padding: 16px 16px 14px;
-}
-.pdp-size-chart-title {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    margin: 0 0 4px;
-    color: var(--black);
-}
-.pdp-size-chart-sub {
-    margin: 0 0 14px;
-    font-size: 12px;
-    color: var(--text-muted);
-}
-.pdp-size-chart-body {
-    display: grid;
-    grid-template-columns: minmax(100px, 34%) 1fr;
-    gap: 12px;
-    align-items: center;
-}
-@media (max-width: 520px) {
-    .pdp-size-chart-body { grid-template-columns: 1fr; }
-}
-.pdp-size-chart-svg { width: 100%; max-width: 120px; height: auto; display: block; margin: 0 auto; }
-.pdp-size-chart-legend {
-    list-style: none;
-    margin: 10px 0 0;
-    padding: 0;
-    font-size: 11px;
-    line-height: 1.55;
-    color: #666;
-}
-.pdp-size-chart-legend li { margin: 0; }
-.pdp-size-chart-legend span {
+.pdp-option-label-main {
     display: inline-flex;
-    width: 16px;
-    height: 16px;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.pdp-size-guide-open {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--green-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    padding: 2px 0;
+    font-family: var(--font-sans);
+}
+.pdp-size-guide-open:hover { color: var(--black); }
+.pdp-size-guide-size-note {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    color: #888;
+    margin-top: 2px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.pdp-size-guide-intro {
+    margin: -8px 0 18px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #666;
+    max-width: 52em;
+}
+.pdp-size-guide-size { white-space: nowrap; }
+.pdp-size-guide-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: #e8f2ed;
-    color: #6fa398;
-    font-size: 10px;
-    font-weight: 700;
-    margin-right: 4px;
+    padding: 24px 16px;
 }
-.pdp-size-chart-table-wrap { overflow-x: auto; }
-.pdp-size-chart-table {
+.pdp-size-guide-modal.is-open { display: flex; }
+.pdp-size-guide-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.52);
+}
+.pdp-size-guide-dialog {
+    position: relative;
+    width: min(920px, 100%);
+    max-height: min(90vh, 720px);
+    overflow: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+.pdp-size-guide-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #888;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.pdp-size-guide-close:hover { color: var(--black); }
+.pdp-size-guide-title {
+    margin: 0 0 20px;
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--black);
+}
+.pdp-size-guide-body { display: flex; flex-direction: column; gap: 20px; }
+.pdp-size-guide-dog-figure {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 8px;
+}
+.pdp-size-guide-dog-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.pdp-size-guide-dog-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.pdp-size-guide-table-wrap { overflow-x: auto; }
+.pdp-size-guide-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
+    font-size: 13px;
     font-family: var(--font-sans);
 }
-.pdp-size-chart-table th,
-.pdp-size-chart-table td {
-    padding: 6px 8px;
+.pdp-size-guide-table th,
+.pdp-size-guide-table td {
+    padding: 10px 12px;
     text-align: left;
     border-bottom: 1px solid #ececec;
-    white-space: nowrap;
+    vertical-align: top;
 }
-.pdp-size-chart-table th {
+.pdp-size-guide-table th {
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #888;
-    font-weight: 600;
+    letter-spacing: 0.55px;
+    color: #666;
+    background: #f6f8f7;
+    font-weight: 700;
+    white-space: nowrap;
 }
-.pdp-size-chart-size { font-weight: 700; color: var(--black); }
-.pdp-size-chart-bar {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 3.5em;
-}
-.pdp-size-chart-bar::before {
-    content: '';
-    display: inline-block;
-    width: var(--pct, 0%);
-    max-width: 48px;
-    height: 6px;
-    border-radius: 3px;
-    background: linear-gradient(90deg, #9bc3b1, #6fa398);
-}
+.pdp-size-guide-size { font-weight: 700; color: var(--black); }
 .pdp-media-desktop {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-auto-rows: auto;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 50%;
     background: #fff;
 }
-.pdp-media-desktop.single-img .pdp-media-item { grid-column: 1 / -1; }
+.pdp-media-hero,
 .pdp-media-item {
     position: relative;
     overflow: hidden;
@@ -183,6 +215,7 @@
     padding: 0 4px 4px;
     box-sizing: border-box;
 }
+.pdp-media-hero img,
 .pdp-media-item img {
     width: auto;
     height: auto;
@@ -233,7 +266,21 @@
 }
 .pdp-thumbs-strip { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .pdp-thumbs-strip::-webkit-scrollbar { display: none; }
-.pdp-thumb { flex: 0 0 60px; height: 60px; border-radius: 4px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color .2s; background: #fff; }
+.pdp-thumbs-strip--desktop { margin-top: 4px; }
+.pdp-thumbs-strip--desktop .pdp-thumb { flex: 0 0 72px; height: 72px; }
+.pdp-thumb {
+    flex: 0 0 60px;
+    height: 60px;
+    padding: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color .2s;
+    background: #fff;
+    appearance: none;
+    font: inherit;
+}
 .pdp-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
 .pdp-thumb.active { border-color: var(--black); }
 
@@ -359,7 +406,7 @@
 }
 @media(max-width: 768px) {
     .pdp-wrap { grid-template-columns: 1fr; padding: 20px 16px 48px; }
-    .pdp-media-desktop { display: none; }
+    .pdp-media-desktop { display: none; max-width: 100%; }
     .pdp-media-mobile { display: block; margin-bottom: 8px; visibility: visible; height: auto; pointer-events: auto; }
     .pdp-panel { position: static; }
     .related-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
@@ -374,7 +421,7 @@
     if(empty($imgs) && $product->image) $imgs = [$product->image];
     $placeholder = 'https://placehold.co/600x600/f8f8f6/9ad7a0?text='.urlencode($product->name);
     $colors = is_array($product->available_colors) ? $product->available_colors : (json_decode($product->available_colors ?? '[]', true) ?? []);
-    $sizes  = is_array($product->available_sizes)  ? $product->available_sizes  : (json_decode($product->available_sizes  ?? '[]', true) ?? []);
+    $sizes = $sizes ?? (is_array($product->available_sizes) ? $product->available_sizes : (json_decode($product->available_sizes ?? '[]', true) ?? []));
     $catalogHex = \App\Models\ProductColor::hexMap();
 
     // Per-color image map for JS (full asset URLs)
@@ -394,25 +441,33 @@
     $firstColorName = !empty($colors[0]['name']) ? $colors[0]['name'] : '';
     $pdpVariantTitle = trim($product->name . ($firstColorName !== '' ? ' ' . $firstColorName : ''));
     $pdpDescText = $product->description ? trim(strip_tags($product->description)) : '';
-    $showSizeChart = ($product->category?->slug === 'maglioncini') || !empty($sizes);
-    $captionSplit = $pdpDescText !== '' && $showSizeChart;
+    $showSizeChart = $showSizeChart ?? (($product->category?->slug === 'maglioncini') || !empty($sizes));
+    $pdpGuideRows = $pdpGuideRows ?? [];
+    $pdpSizeGuideActive = $pdpSizeGuideActive ?? false;
 @endphp
 
 <div class="pdp-wrap">
 
     {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• LEFT: image grid (desktop) / carousel (mobile) â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     <div class="pdp-media-col">
-        {{-- Desktop gallery --}}
-        <div class="pdp-media-desktop {{ count($imgs) <= 1 ? 'single-img' : '' }}">
-            @forelse($imgs as $img)
-                <div class="pdp-media-item">
-                    <img src="{{ asset($img) }}" alt="{{ $product->name }}" loading="eager" decoding="async" fetchpriority="high">
-                </div>
-            @empty
-                <div class="pdp-media-item">
-                    <img src="{{ $placeholder }}" alt="{{ $product->name }}">
-                </div>
-            @endforelse
+        {{-- Desktop gallery: hero + thumbnails --}}
+        <div class="pdp-media-desktop">
+            <div class="pdp-media-hero">
+                @if(!empty($imgs))
+                    <img id="pdpDesktopMainImg" src="{{ asset($imgs[0]) }}" alt="{{ $product->name }}" loading="eager" decoding="async" fetchpriority="high">
+                @else
+                    <img id="pdpDesktopMainImg" src="{{ $placeholder }}" alt="{{ $product->name }}">
+                @endif
+            </div>
+            @if(count($imgs) > 1)
+            <div class="pdp-thumbs-strip pdp-thumbs-strip--desktop" id="desktopThumbStrip" role="tablist" aria-label="{{ __('front.pdp_gallery_thumbs') }}">
+                @foreach($imgs as $i => $img)
+                    <button type="button" class="pdp-thumb {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" data-pdp-select-image aria-selected="{{ $i === 0 ? 'true' : 'false' }}" aria-label="{{ __('front.pdp_gallery_view_image', ['n' => $i + 1]) }}">
+                        <img src="{{ asset($img) }}" alt="" loading="lazy" decoding="async">
+                    </button>
+                @endforeach
+            </div>
+            @endif
         </div>
 
         {{-- Mobile carousel --}}
@@ -431,30 +486,27 @@
             @if(count($imgs) > 1)
             <div class="pdp-thumbs-strip" id="mobileThumbStrip">
                 @foreach($imgs as $i => $img)
-                    <div class="pdp-thumb {{ $i===0?'active':'' }}" data-index="{{ $i }}" onclick="scrollToSlide({{ $i }})">
-                        <img src="{{ asset($img) }}" alt="">
-                    </div>
+                    <button type="button" class="pdp-thumb {{ $i===0?'active':'' }}" data-index="{{ $i }}" onclick="scrollToSlide({{ $i }})" aria-label="{{ __('front.pdp_gallery_view_image', ['n' => $i + 1]) }}">
+                        <img src="{{ asset($img) }}" alt="" loading="lazy" decoding="async">
+                    </button>
                 @endforeach
             </div>
             @endif
         </div>
 
-        @if($pdpVariantTitle !== '' || $pdpDescText !== '' || $showSizeChart)
+        @if($pdpVariantTitle !== '' || $pdpDescText !== '')
         <div class="pdp-media-caption">
             @if($pdpVariantTitle !== '')
                 <h2 class="pdp-media-caption-title" id="pdpVariantTitle">{{ $pdpVariantTitle }}</h2>
             @endif
-            <div class="pdp-media-caption-grid{{ $captionSplit ? ' pdp-media-caption-grid--split' : '' }}">
-                @if($pdpDescText !== '')
+            @if($pdpDescText !== '')
+            <div class="pdp-media-caption-grid">
                 <div class="pdp-media-caption-copy">
                     <p class="pdp-media-caption-kicker">{{ __('front.pdp_description_heading') }}</p>
                     <p class="pdp-media-caption-desc">{{ $pdpDescText }}</p>
                 </div>
-                @endif
-                @if($showSizeChart)
-                    @include('partials.pdp-size-chart', ['product' => $product, 'sizes' => $sizes])
-                @endif
             </div>
+            @endif
         </div>
         @endif
     </div>
@@ -529,7 +581,15 @@
             @if(!empty($sizes))
             <div style="margin-bottom:22px;">
                 <div class="pdp-option-label">
-                    {{ __('front.pdp_size_label') }} <span id="sizeLabel">{{ __('front.pdp_select_size') }}</span>
+                    <span class="pdp-option-label-main">
+                        {{ __('front.pdp_size_label') }}
+                        @if($showSizeChart && ($pdpSizeGuideActive ?? false))
+                            <button type="button" class="pdp-size-guide-open" data-pdp-size-guide-open>
+                                {{ __('front.pdp_size_guide_link') }}
+                            </button>
+                        @endif
+                    </span>
+                    <span id="sizeLabel">{{ __('front.pdp_select_size') }}</span>
                 </div>
                 <div class="pdp-size-list">
                     @foreach($sizes as $size)
@@ -593,6 +653,10 @@
     </div>{{-- /.pdp-panel --}}
 </div>{{-- /.pdp-wrap --}}
 
+@if($showSizeChart && ($pdpSizeGuideActive ?? false))
+    @include('partials.pdp-size-guide-modal', ['guideRows' => $pdpGuideRows])
+@endif
+
 {{-- Below-fold related grid (remaining products) --}}
 @if(isset($related) && $related->count() > 4)
 <div class="pdp-below-related">
@@ -612,6 +676,8 @@
 const colorImages = @json($colorImgsMap);
 const pdpBaseName = @json($product->name);
 const pdpPreloaded = new Set();
+let pdpGalleryImgs = [];
+let pdpGalleryLabel = @json($product->name);
 
 function updatePdpVariantTitle(colorName) {
     const el = document.getElementById('pdpVariantTitle');
@@ -664,31 +730,69 @@ function selectColor(name, el) {
     if (imgs.length) updatePdpImages(imgs, name);
 }
 
+function selectPdpImage(index) {
+    const hero = document.getElementById('pdpDesktopMainImg');
+    if (!hero || !pdpGalleryImgs[index]) return;
+    setImgSrc(hero, pdpGalleryImgs[index], pdpGalleryLabel);
+    const strip = document.getElementById('desktopThumbStrip');
+    if (strip) {
+        strip.querySelectorAll('.pdp-thumb').forEach((t, i) => {
+            const on = i === index;
+            t.classList.toggle('active', on);
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+    }
+}
+
+function bindDesktopThumbStrip() {
+    const strip = document.getElementById('desktopThumbStrip');
+    if (!strip || strip.dataset.bound === '1') return;
+    strip.dataset.bound = '1';
+    strip.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pdp-thumb[data-index]');
+        if (!btn || !strip.contains(btn)) return;
+        const index = parseInt(btn.dataset.index, 10);
+        if (!Number.isNaN(index)) selectPdpImage(index);
+    });
+}
+
+function renderDesktopThumbs(imgs) {
+    let strip = document.getElementById('desktopThumbStrip');
+    const desktop = document.querySelector('.pdp-media-desktop');
+    if (!desktop) return;
+
+    if (imgs.length <= 1) {
+        if (strip) strip.remove();
+        return;
+    }
+
+    if (!strip) {
+        strip = document.createElement('div');
+        strip.id = 'desktopThumbStrip';
+        strip.className = 'pdp-thumbs-strip pdp-thumbs-strip--desktop';
+        strip.setAttribute('role', 'tablist');
+        desktop.appendChild(strip);
+        delete strip.dataset.bound;
+    }
+
+    strip.style.display = '';
+    strip.innerHTML = imgs.map((src, i) =>
+        `<button type="button" class="pdp-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" data-pdp-select-image aria-selected="${i === 0 ? 'true' : 'false'}">` +
+        `<img src="${src}" alt="" loading="lazy" decoding="async"></button>`
+    ).join('');
+    bindDesktopThumbStrip();
+}
+
 async function updatePdpImages(imgs, label) {
     await Promise.all(imgs.map(preloadPdpUrl));
+    pdpGalleryImgs = imgs;
+    pdpGalleryLabel = label || pdpBaseName;
 
-  const desktop = document.querySelector('.pdp-media-desktop');
-  if (desktop) {
-    desktop.className = 'pdp-media-desktop' + (imgs.length <= 1 ? ' single-img' : '');
-    const items = [...desktop.querySelectorAll('.pdp-media-item')];
-    if (items.length === imgs.length && items.length > 0) {
-      items.forEach((item, i) => {
-        let img = item.querySelector('img');
-        if (!img) {
-          img = document.createElement('img');
-          img.loading = 'eager';
-          img.decoding = 'async';
-          item.appendChild(img);
-        }
-        setImgSrc(img, imgs[i], label);
-      });
-    } else {
-      desktop.innerHTML = imgs.map(src =>
-        `<div class="pdp-media-item"><img src="${src}" alt="" loading="eager" decoding="async"></div>`
-      ).join('');
-      desktop.querySelectorAll('img').forEach((img, i) => { img.alt = label; });
+    const hero = document.getElementById('pdpDesktopMainImg');
+    if (hero && imgs.length) {
+        setImgSrc(hero, imgs[0], pdpGalleryLabel);
     }
-  }
+    renderDesktopThumbs(imgs);
 
   const track = document.getElementById('mobileCarousel');
   if (track) {
@@ -728,7 +832,7 @@ async function updatePdpImages(imgs, label) {
         });
       } else {
         strip.innerHTML = imgs.map((src, i) =>
-          `<div class="pdp-thumb ${i===0?'active':''}" data-index="${i}" onclick="scrollToSlide(${i})"><img src="${src}" alt="" loading="eager" decoding="async"></div>`
+          `<button type="button" class="pdp-thumb ${i===0?'active':''}" data-index="${i}" onclick="scrollToSlide(${i})"><img src="${src}" alt="" loading="eager" decoding="async"></button>`
         ).join('');
       }
     } else {
@@ -738,6 +842,8 @@ async function updatePdpImages(imgs, label) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    pdpGalleryImgs = @json(array_values(array_map(fn ($p) => asset($p), $imgs)));
+    bindDesktopThumbStrip();
     preloadAllColorImages();
     const colorParam = new URLSearchParams(window.location.search).get('color');
     if (colorParam) {
@@ -747,6 +853,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const sizeGuideModal = document.getElementById('pdpSizeGuideModal');
+    const openSizeGuide = () => {
+        if (!sizeGuideModal) return;
+        sizeGuideModal.classList.add('is-open');
+        sizeGuideModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    };
+    const closeSizeGuide = () => {
+        if (!sizeGuideModal) return;
+        sizeGuideModal.classList.remove('is-open');
+        sizeGuideModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    };
+    document.querySelectorAll('[data-pdp-size-guide-open]').forEach(btn => {
+        btn.addEventListener('click', openSizeGuide);
+    });
+    document.querySelectorAll('[data-pdp-size-guide-close]').forEach(el => {
+        el.addEventListener('click', closeSizeGuide);
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSizeGuide();
+    });
 });
 function selectSize(size, el) {
     document.querySelectorAll('.pdp-size-pill').forEach(b => b.classList.remove('active'));
@@ -764,7 +893,10 @@ function scrollToSlide(index) {
     if (!track) return;
     const slide = track.querySelectorAll('.pdp-carousel-slide')[index];
     if (slide) slide.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    document.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
+    const strip = document.getElementById('mobileThumbStrip');
+    if (strip) {
+        strip.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
+    }
 }
 (function() {
     const track = document.getElementById('mobileCarousel');
@@ -776,7 +908,10 @@ function scrollToSlide(index) {
             const dist = Math.abs(s.getBoundingClientRect().left - track.getBoundingClientRect().left);
             if (dist < minDist) { minDist = dist; closest = i; }
         });
-        document.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === closest));
+        const strip = document.getElementById('mobileThumbStrip');
+        if (strip) {
+            strip.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === closest));
+        }
     }, { passive: true });
 })();
 </script>

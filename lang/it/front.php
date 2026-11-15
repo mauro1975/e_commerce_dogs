@@ -136,6 +136,30 @@ return [
     'about_mission_text'    => 'Rendere ogni passeggiata, ogni coccola e ogni avventura migliore per i cani e i loro padroni. Qualità premium, design attento e una community che ama i cani tanto quanto noi.',
     'about_mission_btn'     => 'Scopri la Collezione',
 
+    // ── Spedizioni e resi ───────────────────────────────────────────────
+    'shipping_returns_title'   => 'Spedizioni e Resi',
+    'shipping_returns_heading' => 'Spedizioni e Resi',
+    'shipping_returns_meta'    => 'Politiche di spedizione, resi e cambio taglia per gli acquisti su .rosmarino.',
+    'shipping_returns_body'    => '<h2>1. Politiche di Spedizione</h2>
+<ul>
+<li><strong>Tempi di consegna:</strong> Gli ordini vengono evasi in genere entro 1–2 giorni lavorativi. La consegna in Italia richiede in media <strong>2–5 giorni lavorativi</strong> tramite corriere espresso (es. BRT, GLS, DHL), salvo diverse indicazioni al checkout.</li>
+<li><strong>Costi di spedizione:</strong> In Italia le tariffe standard si attestano in genere tra <strong>€4,90 e €7,00</strong>, in base a peso e destinazione. È prevista la <strong>spedizione gratuita per ordini superiori a €60</strong>.</li>
+<li><strong>Imballaggio e taglie:</strong> Per l’abbigliamento canino (maglioncini e simili) è fondamentale consultare la <strong>scheda taglie</strong> nella scheda prodotto (schiena, petto, collo) prima dell’acquisto, per ridurre resi dovuti a taglia errata.</li>
+</ul>
+<h2>2. Politiche di Reso e Cambio Taglia</h2>
+<ul>
+<li><strong>Diritto di recesso:</strong> Hai <strong>14 giorni</strong> dalla ricezione della merce per esercitare il recesso senza obbligo di motivazione, ai sensi del Codice del Consumo (acquisti da consumatore).</li>
+<li><strong>Condizioni del capo:</strong> L’articolo deve essere <strong>integro, non indossato, pulito</strong> (senza peli o odori), con <strong>etichette originali</strong> e imballo adeguato.</li>
+<li><strong>Sigillo di garanzia (tag di sicurezza):</strong> sui capi è applicato un cartellino con filo e sigillo monouso; il reso è accettato <strong>solo se il sigillo non è stato rimosso o manomesso</strong> (puoi provare il capo sul cane senza staccarlo). In caso contrario potremmo ridurre o rifiutare il rimborso.</li>
+<li><strong>Chi paga la spedizione del reso?</strong> Di norma i costi di restituzione sono a carico del <strong>cliente</strong>. Sono a nostro carico solo in caso di prodotto <strong>difettoso, danneggiato</strong> o se abbiamo inviato <strong>articolo o taglia errati</strong>.</li>
+</ul>
+<h2>3. Cambi taglia ed esclusioni</h2>
+<ul>
+<li><strong>Cambi taglia:</strong> Per i maglioncini, se la taglia non è corretta, contattaci entro i termini di recesso: valuteremo insieme un <strong>cambio taglia</strong> o le modalità di reso più semplici, in base alla disponibilità a magazzino.</li>
+<li><strong>Esclusioni:</strong> Articoli <strong>personalizzati o realizzati su misura</strong> (es. ricami o ordinazioni dedicate) sono generalmente <strong>esclusi dal diritto di recesso</strong>, salvo difetti di conformità.</li>
+</ul>
+<p>Per richieste di reso, cambio taglia o informazioni sulla spedizione scrivici dall’area account o all’indirizzo email indicato in checkout e conferma ordine.</p>',
+
     // ── Pagina Categoria ──────────────────────────────────────────────
     'cat_breadcrumb_home'       => 'Home',
     'cat_breadcrumb_collection' => 'Collezione',
@@ -168,19 +192,69 @@ return [
     'pdp_related_title'  => 'Si abbina bene con',
     'pdp_you_may_like'   => 'Potrebbe Piacerti Anche',
     'pdp_description_heading' => 'Descrizione',
+    'pdp_gallery_thumbs'      => 'Miniature prodotto',
+    'pdp_gallery_view_image'  => 'Immagine :n',
     'pdp_size_chart_title'    => 'Scheda taglie',
     'pdp_size_chart_sub'      => 'Misure indicative del capo (cm)',
     'pdp_size_chart_col_size' => 'Taglia',
     'pdp_size_chart_col_back' => 'Schiena',
     'pdp_size_chart_col_neck' => 'Collo',
     'pdp_size_chart_col_chest'=> 'Petto',
+    'pdp_size_guide_link'       => 'Guida alle taglie',
+    'pdp_size_guide_title'      => 'Guida alle taglie',
+    'pdp_size_guide_intro'      => 'Le misure indicate si riferiscono al corpo del cane. Grazie all’elasticità naturale del cashmere, ogni taglia accompagna gradualmente la corporatura senza interruzioni.',
+    'pdp_size_guide_close'      => 'Chiudi',
+    'pdp_size_guide_lbl_neck'   => 'GIROCOLLO',
+    'pdp_size_guide_lbl_back'   => 'LUNGHEZZA',
+    'pdp_size_guide_lbl_chest'  => 'GIROTORACE',
+    'pdp_size_guide_col_size'   => 'Taglia',
+    'pdp_size_guide_col_back'   => 'Lunghezza dorso',
+    'pdp_size_guide_col_neck'   => 'Circonferenza collo',
+    'pdp_size_guide_col_chest'  => 'Circonferenza torace',
+    'pdp_size_guide_col_weight' => 'Peso appr.',
+    'pdp_dog_size_guide' => [
+        'XXS' => [
+            'back' => '21 – 24 cm',
+            'neck' => 'Fino a 24 cm',
+            'chest' => '26 – 31 cm',
+            'chest_num' => 31,
+            'weight' => '800 g – 1,6 kg',
+        ],
+        'XS' => [
+            'back' => '24 – 27 cm',
+            'neck' => 'Fino a 26 cm',
+            'chest' => '28 – 34 cm',
+            'chest_num' => 34,
+            'weight' => '1,5 – 2,7 kg',
+        ],
+        'S' => [
+            'back' => '27 – 30 cm',
+            'neck' => 'Fino a 28 cm',
+            'chest' => '30 – 37 cm',
+            'chest_num' => 37,
+            'weight' => '2,5 – 4 kg',
+        ],
+        'M' => [
+            'back' => '31 – 34 cm',
+            'neck' => 'Fino a 31 cm',
+            'chest' => '34 – 42 cm',
+            'chest_num' => 42,
+            'weight' => '3,8 – 6 kg',
+        ],
+        'L' => [
+            'back' => '35 – 39 cm',
+            'neck' => 'Fino a 35 cm',
+            'chest' => '40 – 48 cm',
+            'chest_num' => 48,
+            'weight' => '5,8 – 8,5 kg',
+        ],
+    ],
     'pdp_sweater_size_defaults' => [
-        'XXS' => ['back' => 22, 'neck' => 18, 'chest' => 26],
-        'XS'  => ['back' => 26, 'neck' => 20, 'chest' => 30],
-        'S'   => ['back' => 30, 'neck' => 22, 'chest' => 34],
-        'SM'  => ['back' => 32, 'neck' => 23, 'chest' => 36],
-        'M'   => ['back' => 34, 'neck' => 24, 'chest' => 38],
-        'L'   => ['back' => 38, 'neck' => 26, 'chest' => 42],
+        'XXS' => ['back' => '21 – 24 cm', 'neck' => 'Fino a 24 cm', 'chest' => '26 – 31 cm', 'chest_num' => 31],
+        'XS'  => ['back' => '24 – 27 cm', 'neck' => 'Fino a 26 cm', 'chest' => '28 – 34 cm', 'chest_num' => 34],
+        'S'   => ['back' => '27 – 30 cm', 'neck' => 'Fino a 28 cm', 'chest' => '30 – 37 cm', 'chest_num' => 37],
+        'M'   => ['back' => '31 – 34 cm', 'neck' => 'Fino a 31 cm', 'chest' => '34 – 42 cm', 'chest_num' => 42],
+        'L'   => ['back' => '35 – 39 cm', 'neck' => 'Fino a 35 cm', 'chest' => '40 – 48 cm', 'chest_num' => 48],
     ],
 
     // ── Card prodotto ─────────────────────────────────────────────────

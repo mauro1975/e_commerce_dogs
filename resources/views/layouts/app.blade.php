@@ -188,7 +188,6 @@
     </div>
 </div>
 
-<div class="announcement-bar">{{ __('front.announcement') }}</div>
 @php $cartItems = session('cart', []); $cartCount = collect($cartItems)->sum('quantity'); @endphp
 
 <header class="site-header">
@@ -199,7 +198,6 @@
         <a href="{{ route('home') }}" class="navbar-brand-logo">.rosmarino</a>
         <ul class="nav-links">
             <li><a href="{{ route('collection') }}" class="{{ request()->routeIs('collection*','category*') ? 'active' : '' }}">{{ __('front.nav_collection') }}</a></li>
-            <li><a href="{{ route('best-sellers') }}" class="{{ request()->routeIs('best-sellers') ? 'active' : '' }}">{{ __('front.nav_best_sellers') }}</a></li>
             <li><a href="{{ route('photos') }}" class="{{ request()->routeIs('photos') ? 'active' : '' }}">{{ __('front.nav_photos') }}</a></li>
             <li><a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">{{ __('front.nav_about') }}</a></li>
         </ul>
@@ -222,7 +220,6 @@
     <nav class="mobile-nav" id="mobileNav">
         <ul>
             <li><a href="{{ route('collection') }}" class="{{ request()->routeIs('collection*','category*') ? 'active' : '' }}">{{ __('front.nav_collection') }}</a></li>
-            <li><a href="{{ route('best-sellers') }}" class="{{ request()->routeIs('best-sellers') ? 'active' : '' }}">{{ __('front.nav_best_sellers') }}</a></li>
             <li><a href="{{ route('photos') }}" class="{{ request()->routeIs('photos') ? 'active' : '' }}">{{ __('front.nav_photos') }}</a></li>
             <li><a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">{{ __('front.nav_about') }}</a></li>
         </ul>
@@ -334,7 +331,7 @@
                 <div class="d-flex flex-column">
                     <a href="{{ route('about') }}">{{ __('front.footer_about') }}</a>
                     <a href="#">{{ __('front.footer_faq') }}</a>
-                    <a href="#">{{ __('front.footer_shipping') }}</a>
+                    <a href="{{ route('shipping-returns') }}">{{ __('front.footer_shipping') }}</a>
                 </div>
             </div>
             <div class="col-6 col-lg-2 mb-4">

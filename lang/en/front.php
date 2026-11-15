@@ -130,6 +130,30 @@ return [
     'about_mission_text'    => 'To make every walk, every cuddle, and every adventure better for dogs and their owners. Premium quality, thoughtful design, and a community that loves dogs as much as we do.',
     'about_mission_btn'     => 'Shop Collection',
 
+    // ── Shipping & returns ──────────────────────────────────────────────
+    'shipping_returns_title'   => 'Shipping & Returns',
+    'shipping_returns_heading' => 'Shipping & Returns',
+    'shipping_returns_meta'    => 'Shipping, returns and size exchange policies for .rosmarino orders.',
+    'shipping_returns_body'    => '<h2>1. Shipping Policy</h2>
+<ul>
+<li><strong>Delivery times:</strong> Orders are usually dispatched within 1–2 business days. Delivery in Italy typically takes <strong>2–5 business days</strong> via express courier (e.g. BRT, GLS, DHL), unless otherwise stated at checkout.</li>
+<li><strong>Shipping costs:</strong> Standard rates in Italy are generally between <strong>€4.90 and €7.00</strong>, depending on weight and destination. <strong>Free shipping applies on orders over €60</strong>.</li>
+<li><strong>Packaging & sizing:</strong> For dog apparel (sweaters and similar), always check the <strong>size guide</strong> on the product page (back, chest, neck) before ordering to avoid returns due to wrong size.</li>
+</ul>
+<h2>2. Returns & Size Exchanges</h2>
+<ul>
+<li><strong>Right of withdrawal:</strong> You have <strong>14 days</strong> from receipt of the goods to withdraw without giving a reason, under EU consumer law.</li>
+<li><strong>Item condition:</strong> Items must be <strong>unused, clean</strong> (no hair or odours), <strong>with original tags</strong> and suitable packaging.</li>
+<li><strong>Warranty seal (security tag):</strong> garments are shipped with a hang tag and one-time seal; returns are accepted <strong>only if the seal has not been removed or tampered with</strong> (you may try the item on your dog without removing it). Otherwise we may reduce or refuse a refund.</li>
+<li><strong>Who pays return shipping?</strong> Return shipping is normally paid by the <strong>customer</strong>. We cover it only if the product is <strong>defective or damaged</strong>, or if we sent the <strong>wrong item or size</strong>.</li>
+</ul>
+<h2>3. Size exchanges & exclusions</h2>
+<ul>
+<li><strong>Size exchanges:</strong> For sweaters, if the size is wrong, contact us within the withdrawal period—we will arrange the simplest <strong>size exchange</strong> or return, subject to stock.</li>
+<li><strong>Exclusions:</strong> <strong>Personalised or made-to-order</strong> items are generally <strong>excluded from the right of withdrawal</strong>, except in case of non-conformity.</li>
+</ul>
+<p>For returns, size exchanges or shipping questions, contact us via your account area or the email address shown at checkout and in your order confirmation.</p>',
+
     // ── Category page ─────────────────────────────────────────────────
     'cat_breadcrumb_home'       => 'Home',
     'cat_breadcrumb_collection' => 'Collection',
@@ -162,19 +186,69 @@ return [
     'pdp_related_title'  => 'Pairs well with',
     'pdp_you_may_like'   => 'You Might Also Like',
     'pdp_description_heading' => 'Description',
+    'pdp_gallery_thumbs'      => 'Product thumbnails',
+    'pdp_gallery_view_image'  => 'Image :n',
     'pdp_size_chart_title'    => 'Size guide',
     'pdp_size_chart_sub'      => 'Approximate garment measurements (cm)',
     'pdp_size_chart_col_size' => 'Size',
     'pdp_size_chart_col_back' => 'Back',
     'pdp_size_chart_col_neck' => 'Neck',
     'pdp_size_chart_col_chest'=> 'Chest',
+    'pdp_size_guide_link'       => 'Size guide',
+    'pdp_size_guide_title'      => 'Size guide',
+    'pdp_size_guide_intro'      => 'Measurements refer to the dog’s body. Thanks to cashmere’s natural stretch, each size adapts smoothly to the body without gaps.',
+    'pdp_size_guide_close'      => 'Close',
+    'pdp_size_guide_lbl_neck'   => 'NECK GIRTH',
+    'pdp_size_guide_lbl_back'   => 'LENGTH',
+    'pdp_size_guide_lbl_chest'  => 'CHEST GIRTH',
+    'pdp_size_guide_col_size'   => 'Size',
+    'pdp_size_guide_col_back'   => 'Back length',
+    'pdp_size_guide_col_neck'   => 'Neck circumference',
+    'pdp_size_guide_col_chest'  => 'Chest circumference',
+    'pdp_size_guide_col_weight' => 'Approx. weight',
+    'pdp_dog_size_guide' => [
+        'XXS' => [
+            'back' => '21 – 24 cm',
+            'neck' => 'Up to 24 cm',
+            'chest' => '26 – 31 cm',
+            'chest_num' => 31,
+            'weight' => '800 g – 1.6 kg',
+        ],
+        'XS' => [
+            'back' => '24 – 27 cm',
+            'neck' => 'Up to 26 cm',
+            'chest' => '28 – 34 cm',
+            'chest_num' => 34,
+            'weight' => '1.5 – 2.7 kg',
+        ],
+        'S' => [
+            'back' => '27 – 30 cm',
+            'neck' => 'Up to 28 cm',
+            'chest' => '30 – 37 cm',
+            'chest_num' => 37,
+            'weight' => '2.5 – 4 kg',
+        ],
+        'M' => [
+            'back' => '31 – 34 cm',
+            'neck' => 'Up to 31 cm',
+            'chest' => '34 – 42 cm',
+            'chest_num' => 42,
+            'weight' => '3.8 – 6 kg',
+        ],
+        'L' => [
+            'back' => '35 – 39 cm',
+            'neck' => 'Up to 35 cm',
+            'chest' => '40 – 48 cm',
+            'chest_num' => 48,
+            'weight' => '5.8 – 8.5 kg',
+        ],
+    ],
     'pdp_sweater_size_defaults' => [
-        'XXS' => ['back' => 22, 'neck' => 18, 'chest' => 26],
-        'XS'  => ['back' => 26, 'neck' => 20, 'chest' => 30],
-        'S'   => ['back' => 30, 'neck' => 22, 'chest' => 34],
-        'SM'  => ['back' => 32, 'neck' => 23, 'chest' => 36],
-        'M'   => ['back' => 34, 'neck' => 24, 'chest' => 38],
-        'L'   => ['back' => 38, 'neck' => 26, 'chest' => 42],
+        'XXS' => ['back' => '21 – 24 cm', 'neck' => 'Up to 24 cm', 'chest' => '26 – 31 cm', 'chest_num' => 31],
+        'XS'  => ['back' => '24 – 27 cm', 'neck' => 'Up to 26 cm', 'chest' => '28 – 34 cm', 'chest_num' => 34],
+        'S'   => ['back' => '27 – 30 cm', 'neck' => 'Up to 28 cm', 'chest' => '30 – 37 cm', 'chest_num' => 37],
+        'M'   => ['back' => '31 – 34 cm', 'neck' => 'Up to 31 cm', 'chest' => '34 – 42 cm', 'chest_num' => 42],
+        'L'   => ['back' => '35 – 39 cm', 'neck' => 'Up to 35 cm', 'chest' => '40 – 48 cm', 'chest_num' => 48],
     ],
 
     // ── Product card ──────────────────────────────────────────────────

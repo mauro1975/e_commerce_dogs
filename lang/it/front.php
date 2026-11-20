@@ -186,6 +186,9 @@ return [
     'pdp_color_label'    => 'Colore',
     'pdp_size_label'     => 'Taglia',
     'pdp_select_size'    => 'Seleziona una taglia',
+    'pdp_collar_size_placeholder' => 'Seleziona una taglia',
+    'pdp_size_sold_out'  => 'Esaurito',
+    'pdp_size_available' => 'Disponibile',
     'pdp_add_to_bag'     => 'Aggiungi al carrello',
     'pdp_out_of_stock'   => 'Esaurito',
     'pdp_low_stock'      => 'Solo :count rimasti in magazzino',
@@ -212,6 +215,21 @@ return [
     'pdp_size_guide_col_neck'   => 'Circonferenza collo',
     'pdp_size_guide_col_chest'  => 'Circonferenza torace',
     'pdp_size_guide_col_weight' => 'Peso appr.',
+
+    'pdp_leather_care_link'  => 'Cura e Manutenzione',
+    'pdp_leather_care_title' => 'Cura e manutenzione',
+    'pdp_leather_care_intro' => 'Questo accessorio è realizzato in pregiata pelle bovina mezzo fiore dal colore omogeneo e dall\'elegante aspetto semiopaco. Lavorata con un attento procedimento di bottalatura che le dona una grana naturale e un inconfondibile tatto setoso. Per preservarne intatta la morbidezza e la brillantezza dei dettagli nel tempo, ti consigliamo di seguire queste semplici accortezze:',
+    'pdp_leather_care_h_daily' => 'Pulizia quotidiana',
+    'pdp_leather_care_p_daily' => 'Spolvera delicatamente la pelle con un panno morbido e asciutto per rimuovere polvere o residui dopo ogni passeggiata.',
+    'pdp_leather_care_h_stains' => 'Rimozione delle macchie',
+    'pdp_leather_care_p_stains' => 'In caso di piccoli segni, utilizza un panno leggermente umido con una minima quantità di sapone neutro o latte detergente delicato. Non strofinare mai la superficie, ma tampona con cura partendo dai bordi verso il centro della macchia.',
+    'pdp_leather_care_h_hardware' => 'Minuteria e dettagli dorati',
+    'pdp_leather_care_p_hardware' => 'Le fibbie, gli anelli e la targhetta logata sono rifiniti con uno speciale strato protettivo studiato per preservarne a lungo la brillantezza. Per mantenerli sempre luminosi ti basterà passare un semplice panno morbido, evitando solo il contatto con prodotti chimici aggressivi o abrasivi.',
+    'pdp_leather_care_h_dry' => 'Asciugatura e conservazione',
+    'pdp_leather_care_p_dry' => 'Lascia asciugare l\'accessorio naturalmente all\'aria, tenendolo lontano dalla luce diretta del sole e da fonti di calore come termosifoni o phon.',
+    'pdp_leather_care_h_avoid' => 'Cosa evitare',
+    'pdp_leather_care_p_avoid' => 'Non utilizzare vapore, prodotti abrasivi o detergenti aggressivi come solventi e smacchiatori, poiché potrebbero alterare la naturale setosità della pelle e la finitura protettiva delle parti metalliche.',
+
     'pdp_dog_size_guide' => [
         'XXS' => [
             'back' => '21 – 24 cm',

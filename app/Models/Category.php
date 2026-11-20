@@ -9,7 +9,11 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'name_en', 'slug', 'description', 'description_en', 'image', 'is_active', 'sort_order'];
+    protected $fillable = ['name', 'name_en', 'slug', 'description', 'description_en', 'image', 'is_active', 'sort_order', 'size_options'];
+
+    protected $casts = [
+        'size_options' => 'array',
+    ];
 
     public function getNameAttribute(string $value): string
     {

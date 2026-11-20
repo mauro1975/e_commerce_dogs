@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\CollarSizeOptions;
+use App\Support\LeashSizeOptions;
 use App\Support\PdpSizeGuide;
+use App\Support\ProductStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -112,7 +115,20 @@ class ShopController extends Controller
             ? $product->available_sizes
             : (json_decode($product->available_sizes ?? '[]', true) ?? []);
 
-        $showSizeChart = ($product->category?->slug === 'maglioncini') || ! empty($sizes);
+        $isCollarProduct = in_array($product->category?->slug, ['collari', 'collars'], true);
+        $isLeashProduct = in_array($product->category?->slug, ['guinzagli', 'leashes'], true);
+        $isHarnessProduct = in_array($product->category?->slug, ['pettorine', 'harnesses'], true);
+        // Collari/guinzagli: select con etichette catalogo; pettorine e maglioncini: pillole taglia
+        $isCatalogSizeProduct = $isCollarProduct || $isLeashProduct;
+
+        $catalogSizeRows = [];
+        if ($isCollarProduct) {
+            $catalogSizeRows = CollarSizeOptions::forProductSizes($product->category, $sizes);
+        } elseif ($isLeashProduct) {
+            $catalogSizeRows = LeashSizeOptions::forProductSizes($product->category, $sizes);
+        }
+
+        $showSizeChart = ($product->category?->slug === 'maglioncini') || (! $isCatalogSizeProduct && ! empty($sizes));
         $sizeGuide = $showSizeChart
             ? PdpSizeGuide::build($product, $sizes)
             : ['rows' => [], 'guideRows' => [], 'active' => false, 'maxChest' => 1.0];
@@ -120,13 +136,32 @@ class ShopController extends Controller
         $pdpGuideRows = $sizeGuide['guideRows'];
         $pdpSizeGuideActive = $sizeGuide['active'];
 
+        $variantStockMap = [];
+        $fallbackStock = (int) ($product->stock ?? 0);
+        $usesProductPool = ProductStock::usesProductPool($product);
+        foreach ($product->variants as $variant) {
+            $colorKey = (string) $variant->color;
+            $sizeKey = (string) $variant->size;
+            $variantStockMap[$colorKey][$sizeKey] = $usesProductPool
+                ? $fallbackStock
+                : (int) $variant->stock;
+        }
+
         return view('shop.product', compact(
             'product',
             'related',
             'sizes',
             'showSizeChart',
             'pdpGuideRows',
-            'pdpSizeGuideActive'
+            'pdpSizeGuideActive',
+            'isCollarProduct',
+            'isLeashProduct',
+            'isHarnessProduct',
+            'isCatalogSizeProduct',
+            'catalogSizeRows',
+            'variantStockMap',
+            'fallbackStock',
+            'usesProductPool'
         ));
     }
 

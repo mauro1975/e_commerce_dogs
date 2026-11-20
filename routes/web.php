@@ -59,6 +59,10 @@ Route::prefix("admin")->name("admin.")->group(function () {
     Route::put("/categories/{category}", [AdminWebController::class, "updateCategory"])->name("categories.update");
     Route::delete("/categories/{category}", [AdminWebController::class, "destroyCategory"])->name("categories.delete");
     Route::get("/colors", [AdminWebController::class, "colors"])->name("colors");
+    Route::get("/collar-sizes", [AdminWebController::class, "collarSizes"])->name("collar-sizes");
+    Route::put("/collar-sizes", [AdminWebController::class, "updateCollarSizes"])->name("collar-sizes.update");
+    Route::get("/leash-sizes", [AdminWebController::class, "leashSizes"])->name("leash-sizes");
+    Route::put("/leash-sizes", [AdminWebController::class, "updateLeashSizes"])->name("leash-sizes.update");
     Route::post("/colors", [AdminWebController::class, "storeColor"])->name("colors.store");
     Route::put("/colors/{productColor}", [AdminWebController::class, "updateColor"])->name("colors.update");
     Route::delete("/colors/{productColor}", [AdminWebController::class, "destroyColor"])->name("colors.delete");

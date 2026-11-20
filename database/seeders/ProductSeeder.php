@@ -35,6 +35,7 @@ class ProductSeeder extends Seeder
         ];
 
         $sizes = json_encode(['XS', 'S', 'M', 'L', 'XL']);
+        $harnessSizes = json_encode(['XS', 'S', 'M', 'L']);
         $collarSizes = json_encode(['XS', 'S', 'M', 'L']);
 
         $products = [
@@ -141,7 +142,7 @@ class ProductSeeder extends Seeder
                 'description_en'    => 'Easy step-in design with front and back leash attachments. Padded chest plate for comfort. Reflective strips for night safety.',
                 'price'             => 44.99,
                 'available_colors'  => $colorSets['classic'],
-                'available_sizes'   => $sizes,
+                'available_sizes'   => $harnessSizes,
                 'is_active'         => true,
                 'is_featured'       => true,
                 'is_best_seller'    => true,
@@ -156,7 +157,7 @@ class ProductSeeder extends Seeder
                 'description_en'    => 'Heavy-duty harness for outdoor adventures. Handle on back for assistance on rough terrain. Multiple adjustment points.',
                 'price'             => 59.99,
                 'available_colors'  => $colorSets['neutral'],
-                'available_sizes'   => $sizes,
+                'available_sizes'   => $harnessSizes,
                 'is_active'         => true,
                 'is_featured'       => false,
                 'is_best_seller'    => false,

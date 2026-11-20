@@ -58,4 +58,17 @@ class Product extends Model
         }
         return (float) $this->price;
     }
+
+    public function isLeatherProduct(): bool
+    {
+        $parts = array_filter([
+            $this->attributes['name'] ?? '',
+            $this->attributes['name_en'] ?? '',
+            $this->attributes['description'] ?? '',
+            $this->attributes['description_en'] ?? '',
+        ]);
+        $text = strtolower(implode(' ', $parts));
+
+        return str_contains($text, 'pelle') || str_contains($text, 'leather');
+    }
 }

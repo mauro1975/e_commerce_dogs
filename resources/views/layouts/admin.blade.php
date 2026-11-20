@@ -115,6 +115,12 @@
         <a href="{{ route('admin.colors') }}" class="{{ request()->routeIs('admin.colors*') ? 'active' : '' }}">
             <i class="bi bi-palette"></i> Colori
         </a>
+        <a href="{{ route('admin.collar-sizes') }}" class="{{ request()->routeIs('admin.collar-sizes*') ? 'active' : '' }}">
+            <i class="bi bi-rulers"></i> Misure collari
+        </a>
+        <a href="{{ route('admin.leash-sizes') }}" class="{{ request()->routeIs('admin.leash-sizes*') ? 'active' : '' }}">
+            <i class="bi bi-rulers"></i> Misure guinzagli
+        </a>
 
         <div class="admin-nav-section">Vendite</div>
         <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">

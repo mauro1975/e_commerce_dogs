@@ -7,7 +7,9 @@ use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Support\ProductStock;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -89,9 +91,12 @@ class OrderController extends Controller
                 'price'        => $item->price,
             ]);
 
-            if ($item->variant_id) {
-                ProductVariant::where('id', $item->variant_id)
-                    ->decrement('stock', $item->quantity);
+            $itemProduct = Product::find($item->product_id);
+            $itemVariant = $item->variant_id
+                ? ProductVariant::find($item->variant_id)
+                : null;
+            if ($itemProduct) {
+                ProductStock::decrementAfterOrder($itemProduct, $itemVariant, (int) $item->quantity);
             }
         }
 

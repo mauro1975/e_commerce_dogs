@@ -16,6 +16,10 @@ use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductVariant;
 use App\Models\User;
+use App\Support\CategorySizing;
+use App\Support\CollarSizeOptions;
+use App\Support\HarnessSizeOptions;
+use App\Support\LeashSizeOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -82,8 +86,30 @@ class AdminWebController extends Controller
     {
         $categories = Category::orderBy('name')->get();
         $colorOptions = ProductColor::optionsForForms();
+        $collarCategory = CollarSizeOptions::collarCategory();
+        $collarSizePresets = CollarSizeOptions::forCategory($collarCategory);
+        $collarCategoryId = $collarCategory?->id;
+        $leashCategory = LeashSizeOptions::leashCategory();
+        $leashSizePresets = LeashSizeOptions::forCategory($leashCategory);
+        $leashCategoryId = $leashCategory?->id;
+        $harnessCategory = HarnessSizeOptions::harnessCategory();
+        $harnessSizePresets = HarnessSizeOptions::forCategory($harnessCategory);
+        $harnessCategoryId = $harnessCategory?->id;
+        $bagHolderCategoryId = CategorySizing::bagHolderCategory()?->id;
+        $noSizeCategoryIds = CategorySizing::noSizeCategoryIds();
 
-        return view('admin.products.create', compact('categories', 'colorOptions'));
+        return view('admin.products.create', compact(
+            'categories',
+            'colorOptions',
+            'collarSizePresets',
+            'collarCategoryId',
+            'leashSizePresets',
+            'leashCategoryId',
+            'harnessSizePresets',
+            'harnessCategoryId',
+            'bagHolderCategoryId',
+            'noSizeCategoryIds'
+        ));
     }
 
     public function storeProduct(Request $request)
@@ -116,6 +142,8 @@ class AdminWebController extends Controller
 
         $selectedColors = $request->input('colors', []);
         $selectedSizes  = $request->input('sizes', []);
+        $category = Category::findOrFail($data['category_id']);
+        $this->applyCategorySizeRules($category, $selectedSizes);
 
         // Build available_colors array
         $data['available_colors'] = array_values(array_map(
@@ -165,16 +193,17 @@ class AdminWebController extends Controller
 
         $product = Product::create($data);
 
-        // Create variants for all color/size combos
-        foreach ($selectedColors as $color) {
-            foreach ($selectedSizes as $size) {
-                $product->variants()->create([
-                    'color'     => $color,
-                    'color_hex' => $colorMap[$color] ?? '#888888',
-                    'size'      => strtoupper($size),
-                    'stock'     => 0,
-                    'sku'       => strtoupper($product->id . '-' . $color . '-' . $size),
-                ]);
+        if ($selectedSizes !== []) {
+            foreach ($selectedColors as $color) {
+                foreach ($selectedSizes as $size) {
+                    $product->variants()->create([
+                        'color'     => $color,
+                        'color_hex' => $colorMap[$color] ?? '#888888',
+                        'size'      => (string) $size,
+                        'stock'     => 0,
+                        'sku'       => strtoupper($product->id . '-' . $color . '-' . $size),
+                    ]);
+                }
             }
         }
 
@@ -185,8 +214,54 @@ class AdminWebController extends Controller
     {
         $categories = Category::orderBy('name')->get();
         $colorOptions = ProductColor::optionsForForms($product);
+        $collarCategory = CollarSizeOptions::collarCategory();
+        $collarSizePresets = CollarSizeOptions::forCategory($collarCategory);
+        $collarCategoryId = $collarCategory?->id;
+        $leashCategory = LeashSizeOptions::leashCategory();
+        $leashSizePresets = LeashSizeOptions::forCategory($leashCategory);
+        $leashCategoryId = $leashCategory?->id;
+        $harnessCategory = HarnessSizeOptions::harnessCategory();
+        $harnessSizePresets = HarnessSizeOptions::forCategory($harnessCategory);
+        $harnessCategoryId = $harnessCategory?->id;
+        $isCollarProduct = $collarCategoryId && (int) $product->category_id === (int) $collarCategoryId;
+        $isLeashProduct = $leashCategoryId && (int) $product->category_id === (int) $leashCategoryId;
+        $isHarnessProduct = $harnessCategoryId && (int) $product->category_id === (int) $harnessCategoryId;
+        $isCatalogSizeProduct = $isCollarProduct || $isLeashProduct || $isHarnessProduct;
+        $catalogSizePresets = $isCollarProduct
+            ? $collarSizePresets
+            : ($isLeashProduct
+                ? $leashSizePresets
+                : ($isHarnessProduct ? $harnessSizePresets : []));
+        $product->load('variants');
+        $variantStockMap = [];
+        foreach ($product->variants as $v) {
+            $variantStockMap[$v->color][(string) $v->size] = (int) $v->stock;
+        }
 
-        return view('admin.products.edit', compact('product', 'categories', 'colorOptions'));
+        $productUsesSizes = CategorySizing::categoryUsesSizes($product->category);
+        $bagHolderCategoryId = CategorySizing::bagHolderCategory()?->id;
+        $noSizeCategoryIds = CategorySizing::noSizeCategoryIds();
+
+        return view('admin.products.edit', compact(
+            'product',
+            'categories',
+            'colorOptions',
+            'collarSizePresets',
+            'collarCategoryId',
+            'leashSizePresets',
+            'leashCategoryId',
+            'harnessSizePresets',
+            'harnessCategoryId',
+            'bagHolderCategoryId',
+            'noSizeCategoryIds',
+            'isCollarProduct',
+            'isLeashProduct',
+            'isHarnessProduct',
+            'isCatalogSizeProduct',
+            'catalogSizePresets',
+            'productUsesSizes',
+            'variantStockMap'
+        ));
     }
 
     public function updateProduct(Request $request, Product $product)
@@ -263,11 +338,6 @@ class AdminWebController extends Controller
             }
         }
 
-        // Update variant stocks
-        foreach ($request->input('variant_stock', []) as $variantId => $stock) {
-            ProductVariant::where('id', $variantId)->update(['stock' => (int) $stock]);
-        }
-
         // Colors & Sizes from checkboxes
         $colorMap = ProductColor::hexMap();
         $selectedColors = $request->input('colors', []);
@@ -329,7 +399,20 @@ class AdminWebController extends Controller
             },
             $selectedColors
         ));
-        $data['available_sizes'] = array_values($request->input('sizes', []));
+        $category = Category::findOrFail($data['category_id']);
+        $selectedSizes = $request->input('sizes', []);
+        $this->applyCategorySizeRules($category, $selectedSizes);
+        $data['available_sizes'] = array_values($selectedSizes);
+
+        // Keep gallery JSON in sync when a color photo is removed
+        foreach ($deleteColorImages as $paths) {
+            foreach ($paths as $delPath) {
+                $galleryImages = array_values(array_filter(
+                    $galleryImages,
+                    fn ($p) => $p !== $delPath
+                ));
+            }
+        }
 
         // Merge general gallery with per-color images (unique, gallery first)
         $allColorImgs = [];
@@ -343,7 +426,166 @@ class AdminWebController extends Controller
         $data['image']  = $mergedImages[0] ?? null;
 
         $product->update($data);
+
+        $product->refresh();
+        $this->syncProductVariants(
+            $product,
+            $selectedColors,
+            $data['available_sizes'],
+            $colorMap
+        );
+
+        $this->applyVariantStockFromRequest($product, $request);
+        $this->pruneSizedVariantsForNoSizeCategory($product);
+        $this->syncProductStockTotal($product);
+
         return redirect()->route('admin.products')->with('success', 'Product updated!');
+    }
+
+    protected function applyCategorySizeRules(Category $category, array &$selectedSizes): void
+    {
+        if (! CategorySizing::categoryUsesSizes($category)) {
+            $selectedSizes = [];
+        }
+    }
+
+    protected function pruneSizedVariantsForNoSizeCategory(Product $product): void
+    {
+        $product->loadMissing('category');
+        if (CategorySizing::categoryUsesSizes($product->category)) {
+            return;
+        }
+
+        $product->variants()->where('size', '!=', '')->delete();
+    }
+
+    public function collarSizes()
+    {
+        $category = CollarSizeOptions::collarCategory() ?? abort(404);
+        $rows = CollarSizeOptions::forCategory($category);
+
+        return view('admin.collar-sizes', compact('rows', 'category'));
+    }
+
+    public function updateCollarSizes(Request $request)
+    {
+        $category = CollarSizeOptions::collarCategory() ?? abort(404);
+
+        $data = $request->validate([
+            'rows' => 'required|array|min:1',
+            'rows.*.size' => 'required|string|max:10',
+            'rows.*.length_min' => 'required|numeric|min:0',
+            'rows.*.length_max' => 'required|numeric|min:0',
+            'rows.*.height' => 'required|numeric|min:0',
+        ]);
+
+        $rows = [];
+        foreach (array_values($data['rows']) as $i => $row) {
+            $rows[] = [
+                'size' => trim($row['size']),
+                'length_min' => (float) $row['length_min'],
+                'length_max' => (float) $row['length_max'],
+                'height' => (float) $row['height'],
+                'sort' => $i + 1,
+            ];
+        }
+
+        $category->update(['size_options' => $rows]);
+
+        return back()->with('success', 'Misure collari aggiornate.');
+    }
+
+    public function leashSizes()
+    {
+        $category = LeashSizeOptions::leashCategory() ?? abort(404);
+        $rows = LeashSizeOptions::forCategory($category);
+
+        return view('admin.leash-sizes', compact('rows', 'category'));
+    }
+
+    public function updateLeashSizes(Request $request)
+    {
+        $category = LeashSizeOptions::leashCategory() ?? abort(404);
+
+        $data = $request->validate([
+            'rows' => 'required|array|min:1',
+            'rows.*.size' => 'required|string|max:10',
+            'rows.*.width_mm' => 'required|numeric|min:0',
+            'rows.*.length_m' => 'required|numeric|min:0',
+        ]);
+
+        $rows = [];
+        foreach (array_values($data['rows']) as $i => $row) {
+            $rows[] = [
+                'size' => trim($row['size']),
+                'width_mm' => (float) $row['width_mm'],
+                'length_m' => (float) $row['length_m'],
+                'sort' => $i + 1,
+            ];
+        }
+
+        $category->update(['size_options' => $rows]);
+
+        return back()->with('success', 'Misure guinzagli aggiornate.');
+    }
+
+    /**
+     * @param  list<string>  $colors
+     * @param  list<string>  $sizes
+     * @param  array<string, string>  $colorMap
+     */
+    protected function syncProductVariants(Product $product, array $colors, array $sizes, array $colorMap): void
+    {
+        if ($sizes === []) {
+            return;
+        }
+
+        $colors = $colors !== [] ? $colors : [''];
+
+        foreach ($colors as $color) {
+            foreach ($sizes as $size) {
+                $size = (string) $size;
+                $product->variants()->firstOrCreate(
+                    ['color' => $color, 'size' => $size],
+                    [
+                        'color_hex' => $colorMap[$color] ?? '#888888',
+                        'stock' => 0,
+                        'sku' => strtoupper($product->id . '-' . $color . '-' . $size),
+                    ]
+                );
+            }
+        }
+    }
+
+    protected function applyVariantStockFromRequest(Product $product, Request $request): void
+    {
+        foreach ($request->input('variant_stock_combo', []) as $colorKey => $bySize) {
+            if (! is_array($bySize)) {
+                continue;
+            }
+            $color = $colorKey === '_default' ? '' : (string) $colorKey;
+            foreach ($bySize as $size => $stock) {
+                $product->variants()
+                    ->where('color', $color)
+                    ->where('size', (string) $size)
+                    ->update(['stock' => max(0, (int) $stock)]);
+            }
+        }
+
+        foreach ($request->input('variant_stock', []) as $variantId => $stock) {
+            ProductVariant::query()
+                ->where('id', $variantId)
+                ->where('product_id', $product->id)
+                ->update(['stock' => max(0, (int) $stock)]);
+        }
+    }
+
+    protected function syncProductStockTotal(Product $product): void
+    {
+        $sum = (int) $product->variants()->sum('stock');
+        if ($sum > 0) {
+            $product->update(['stock' => $sum]);
+        }
     }
 
     public function destroyProduct(Product $product)

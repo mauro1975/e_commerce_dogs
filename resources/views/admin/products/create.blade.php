@@ -87,10 +87,46 @@
                     </p>
 
                     @php
-                        $sizeOptions = ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
+                        $collarSizePresets = $collarSizePresets ?? [];
+                        $leashSizePresets = $leashSizePresets ?? [];
+                        $harnessSizePresets = $harnessSizePresets ?? [];
+                        $collarCategoryId = $collarCategoryId ?? null;
+                        $leashCategoryId = $leashCategoryId ?? null;
+                        $harnessCategoryId = $harnessCategoryId ?? null;
+                        $bagHolderCategoryId = $bagHolderCategoryId ?? null;
+                        $sweaterSizes = ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
+                        $collarSizes = array_column($collarSizePresets, 'size');
+                        $leashSizes = array_column($leashSizePresets, 'size');
+                        $harnessSizes = array_column($harnessSizePresets, 'size');
                         $oldColors = old('colors', []);
                         $oldSizes  = old('sizes', []);
+                        $oldCategory = old('category_id');
+                        $isOldCollar = $collarCategoryId && (string) $oldCategory === (string) $collarCategoryId;
+                        $isOldLeash = $leashCategoryId && (string) $oldCategory === (string) $leashCategoryId;
+                        $isOldHarness = $harnessCategoryId && (string) $oldCategory === (string) $harnessCategoryId;
+                        $noSizeCategoryIds = $noSizeCategoryIds ?? [];
+                        $isOldBagHolder = $oldCategory && in_array((int) $oldCategory, $noSizeCategoryIds, true);
+                        $isOldCatalogSize = $isOldCollar || $isOldLeash || $isOldHarness;
+                        $sizeOptions = $isOldBagHolder
+                            ? []
+                            : ($isOldCollar
+                                ? $collarSizes
+                                : ($isOldLeash ? $leashSizes : ($isOldHarness ? $harnessSizes : $sweaterSizes)));
                         $colorOptions = $colorOptions ?? [];
+                        $catalogSizeLabelMap = [];
+                        if ($isOldLeash) {
+                            foreach ($leashSizePresets as $preset) {
+                                $catalogSizeLabelMap[$preset['size']] = \App\Support\LeashSizeOptions::label($preset);
+                            }
+                        } elseif ($isOldHarness) {
+                            foreach ($harnessSizePresets as $preset) {
+                                $catalogSizeLabelMap[$preset['size']] = \App\Support\HarnessSizeOptions::label($preset);
+                            }
+                        } elseif ($isOldCollar) {
+                            foreach ($collarSizePresets as $preset) {
+                                $catalogSizeLabelMap[$preset['size']] = \App\Support\CollarSizeOptions::label($preset);
+                            }
+                        }
                     @endphp
 
                     <div class="mb-4">
@@ -132,14 +168,27 @@
                         @endforeach
                     </div>
 
-                    <div class="mt-3">
+                    <div class="mt-3" id="createProductSizesBlock" style="display:{{ $isOldBagHolder ? 'none' : 'block' }};">
                         <label class="form-label fw-semibold">Taglie disponibili</label>
-                        <div class="d-flex gap-4 flex-wrap mt-1">
+                        <p id="createCollarSizesHint" style="font-size:12px;color:#888;margin:4px 0 10px;display:{{ $isOldCollar ? 'block' : 'none' }};">
+                            Misure catalogo collari da <a href="{{ route('admin.collar-sizes') }}">Admin → Misure collari</a>.
+                        </p>
+                        <p id="createLeashSizesHint" style="font-size:12px;color:#888;margin:4px 0 10px;display:{{ $isOldLeash ? 'block' : 'none' }};">
+                            Misure guinzagli da <a href="{{ route('admin.leash-sizes') }}">Admin → Misure guinzagli</a> (larghezza + lunghezza 1,20 m).
+                        </p>
+                        <p id="createHarnessSizesHint" style="font-size:12px;color:#888;margin:4px 0 10px;display:{{ $isOldHarness ? 'block' : 'none' }};">
+                            Taglie pettorine: <strong>XS</strong>, <strong>S</strong>, <strong>M</strong>, <strong>L</strong>.
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap mt-1" id="createSizesCheckboxes">
                             @foreach($sizeOptions as $size)
-                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+                                <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:14px;">
                                     <input type="checkbox" name="sizes[]" value="{{ $size }}"
                                            {{ in_array($size, $oldSizes) ? 'checked' : '' }}>
-                                    <span style="min-width:32px;height:28px;padding:0 8px;border:1.5px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;">{{ $size }}</span>
+                                    @if($isOldCatalogSize && isset($catalogSizeLabelMap[$size]))
+                                        <span style="font-size:13px;line-height:1.35;">{{ $catalogSizeLabelMap[$size] }}</span>
+                                    @else
+                                        <span style="min-width:32px;height:28px;padding:0 8px;border:1.5px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;">{{ $size }}</span>
+                                    @endif
                                 </label>
                             @endforeach
                         </div>
@@ -160,7 +209,7 @@
                     <h5 style="font-weight:700;margin-bottom:20px;">Organizzazione</h5>
                     <div class="mb-3">
                         <label class="form-label">Categoria *</label>
-                        <select name="category_id" class="form-select" required>
+                        <select name="category_id" id="createProductCategory" class="form-select" required data-collar-category-id="{{ $collarCategoryId }}" data-leash-category-id="{{ $leashCategoryId }}" data-harness-category-id="{{ $harnessCategoryId }}" data-no-size-category-ids="{{ implode(',', $noSizeCategoryIds ?? []) }}">
                             <option value="">Seleziona categoria</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" {{ old('category_id')==$cat->id?'selected':'' }}>{{ $cat->name }}</option>
@@ -195,6 +244,68 @@
 </div>
 
 <script>
+const collarSizePresetsJs = @json(array_map(fn ($p) => ['size' => $p['size'], 'label' => \App\Support\CollarSizeOptions::label($p)], $collarSizePresets));
+const leashSizePresetsJs = @json(array_map(fn ($p) => ['size' => $p['size'], 'label' => \App\Support\LeashSizeOptions::label($p)], $leashSizePresets));
+const harnessSizePresetsJs = @json(array_map(fn ($p) => ['size' => $p['size'], 'label' => \App\Support\HarnessSizeOptions::label($p)], $harnessSizePresets));
+const sweaterSizesJs = @json($sweaterSizes);
+
+function toggleCreateProductSizesBlock(show) {
+    const block = document.getElementById('createProductSizesBlock');
+    if (block) block.style.display = show ? 'block' : 'none';
+}
+
+function renderCreateSizeCheckboxes(mode) {
+    const box = document.getElementById('createSizesCheckboxes');
+    const hintCollar = document.getElementById('createCollarSizesHint');
+    const hintLeash = document.getElementById('createLeashSizesHint');
+    const hintHarness = document.getElementById('createHarnessSizesHint');
+    if (mode === 'none') {
+        toggleCreateProductSizesBlock(false);
+        if (box) box.innerHTML = '';
+        return;
+    }
+    toggleCreateProductSizesBlock(true);
+    if (!box) return;
+    const isCatalog = mode === 'collar' || mode === 'leash' || mode === 'harness';
+    const items = mode === 'collar'
+        ? collarSizePresetsJs
+        : (mode === 'leash'
+            ? leashSizePresetsJs
+            : (mode === 'harness' ? harnessSizePresetsJs : sweaterSizesJs.map(s => ({ size: s, label: s }))));
+    box.innerHTML = items.map(item => `
+        <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" name="sizes[]" value="${item.size}">
+            ${isCatalog
+                ? `<span style="font-size:13px;line-height:1.35;">${item.label}</span>`
+                : `<span style="min-width:32px;height:28px;padding:0 8px;border:1.5px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;">${item.size}</span>`}
+        </label>
+    `).join('');
+    if (hintCollar) hintCollar.style.display = mode === 'collar' ? 'block' : 'none';
+    if (hintLeash) hintLeash.style.display = mode === 'leash' ? 'block' : 'none';
+    if (hintHarness) hintHarness.style.display = mode === 'harness' ? 'block' : 'none';
+}
+
+function categoryHasNoSizes(selectEl) {
+    const ids = (selectEl?.dataset.noSizeCategoryIds || '').split(',').filter(Boolean);
+    return ids.includes(String(selectEl?.value || ''));
+}
+
+function createProductCategorySizeMode(selectEl) {
+    if (categoryHasNoSizes(selectEl)) return 'none';
+    const val = selectEl?.value;
+    const collarId = selectEl?.dataset.collarCategoryId;
+    const leashId = selectEl?.dataset.leashCategoryId;
+    const harnessId = selectEl?.dataset.harnessCategoryId;
+    if (collarId && val === collarId) return 'collar';
+    if (leashId && val === leashId) return 'leash';
+    if (harnessId && val === harnessId) return 'harness';
+    return 'sweater';
+}
+
+document.getElementById('createProductCategory')?.addEventListener('change', function () {
+    renderCreateSizeCheckboxes(createProductCategorySizeMode(this));
+});
+
 const _createFilesMap = {}; // slug -> { files: File[], input: HTMLInputElement }
 
 function toggleColorImg(cb) {

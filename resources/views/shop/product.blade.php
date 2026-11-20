@@ -34,8 +34,16 @@
     font-size: clamp(20px, 2.4vw, 26px);
     font-weight: 400;
     line-height: 1.25;
-    margin: 0 0 16px;
+    margin: 0 0 4px;
     color: var(--black);
+}
+.pdp-media-caption-color {
+    font-family: var(--font-serif);
+    font-size: clamp(15px, 1.75vw, 18px);
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0 0 16px;
+    color: #555;
 }
 .pdp-media-caption-grid {
     display: grid;
@@ -58,12 +66,48 @@
     text-transform: uppercase;
     color: #888;
 }
+.pdp-leather-care-link {
+    display: inline-block;
+    margin-top: 14px;
+    border: none;
+    background: transparent;
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    padding: 0;
+    font-family: var(--font-sans);
+}
+.pdp-leather-care-link:hover { color: var(--black); }
+.pdp-leather-care-dialog { max-width: 560px; max-height: 90vh; overflow-y: auto; }
+.pdp-leather-care-body { font-size: 14px; line-height: 1.65; color: #444; }
+.pdp-leather-care-body .pdp-size-guide-intro,
+.pdp-leather-care-text {
+    text-align: justify;
+    text-align-last: left;
+}
+.pdp-leather-care-heading {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--black);
+    margin: 20px 0 6px;
+}
+.pdp-leather-care-text { margin: 0 0 4px; }
+
 .pdp-media-caption-desc {
     font-size: 14px;
     line-height: 1.7;
     color: #444;
     margin: 0;
     white-space: pre-line;
+    text-align: justify;
+    text-align-last: left;
 }
 .pdp-option-label-main {
     display: inline-flex;
@@ -314,6 +358,39 @@
 .pdp-size-pill:hover { border-color: var(--black); }
 .pdp-size-pill.active { border-color: var(--black); background: var(--black); color: #fff; }
 
+/* Collar size custom select */
+.pdp-collar-size { position: relative; margin-bottom: 22px; font-family: Georgia, 'Times New Roman', serif; }
+.pdp-collar-size-label { font-size: 15px; margin-bottom: 10px; color: var(--black); }
+.pdp-collar-size-trigger {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 16px; border: 1px solid #d8d8d8; background: #fff; border-radius: 2px;
+    font: inherit; font-size: 15px; color: var(--black); cursor: pointer; text-align: left;
+}
+.pdp-collar-size-trigger.is-open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.pdp-collar-size-chevron {
+    width: 10px; height: 10px; border-right: 1.5px solid #333; border-bottom: 1.5px solid #333;
+    transform: rotate(45deg); margin-top: -4px; flex-shrink: 0; transition: transform .2s;
+}
+.pdp-collar-size-trigger.is-open .pdp-collar-size-chevron { transform: rotate(-135deg); margin-top: 4px; }
+.pdp-collar-size-panel {
+    position: absolute; left: 0; right: 0; z-index: 30;
+    border: 1px solid #d8d8d8; border-top: none; background: #fff;
+    max-height: 280px; overflow-y: auto;
+}
+.pdp-collar-size-option {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 16px; border: none; border-top: 1px solid #eee; background: #fff;
+    font: inherit; font-size: 14px; color: var(--black); cursor: pointer; text-align: left;
+}
+.pdp-collar-size-option:first-child { border-top: none; }
+.pdp-collar-size-option:hover:not(.is-disabled) { background: #fafafa; }
+.pdp-collar-size-option.is-selected { font-weight: 600; }
+.pdp-collar-size-option.is-disabled { color: #b5b5b5; cursor: not-allowed; }
+.pdp-collar-size-option.is-disabled .pdp-collar-size-option-text { color: #b5b5b5; }
+.pdp-collar-size-status { font-size: 13px; white-space: nowrap; flex-shrink: 0; color: #3d7a5a; font-style: italic; }
+.pdp-collar-size-status.is-out { color: #b5b5b5; }
+.pdp-collar-size-option.is-disabled .pdp-collar-size-status { color: #b5b5b5; }
+
 /* Color swatches */
 .pdp-color-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
 .pdp-color-swatch {
@@ -439,8 +516,8 @@
     }
 
     $firstColorName = !empty($colors[0]['name']) ? $colors[0]['name'] : '';
-    $pdpVariantTitle = trim($product->name . ($firstColorName !== '' ? ' ' . $firstColorName : ''));
     $pdpDescText = $product->description ? trim(strip_tags($product->description)) : '';
+    $showLeatherCare = $product->isLeatherProduct();
     $showSizeChart = $showSizeChart ?? (($product->category?->slug === 'maglioncini') || !empty($sizes));
     $pdpGuideRows = $pdpGuideRows ?? [];
     $pdpSizeGuideActive = $pdpSizeGuideActive ?? false;
@@ -494,16 +571,26 @@
             @endif
         </div>
 
-        @if($pdpVariantTitle !== '' || $pdpDescText !== '')
+        @if($product->name !== '' || !empty($colors) || $pdpDescText !== '' || $showLeatherCare)
         <div class="pdp-media-caption">
-            @if($pdpVariantTitle !== '')
-                <h2 class="pdp-media-caption-title" id="pdpVariantTitle">{{ $pdpVariantTitle }}</h2>
+            @if($product->name !== '' || !empty($colors))
+                <h2 class="pdp-media-caption-title" id="pdpProductTitle">{{ $product->name }}</h2>
+                @if(!empty($colors))
+                    <p class="pdp-media-caption-color" id="pdpVariantColor">{{ $firstColorName }}</p>
+                @endif
             @endif
-            @if($pdpDescText !== '')
+            @if($pdpDescText !== '' || $showLeatherCare)
             <div class="pdp-media-caption-grid">
                 <div class="pdp-media-caption-copy">
-                    <p class="pdp-media-caption-kicker">{{ __('front.pdp_description_heading') }}</p>
-                    <p class="pdp-media-caption-desc">{{ $pdpDescText }}</p>
+                    @if($pdpDescText !== '')
+                        <p class="pdp-media-caption-kicker">{{ __('front.pdp_description_heading') }}</p>
+                        <p class="pdp-media-caption-desc">{{ $pdpDescText }}</p>
+                    @endif
+                    @if($showLeatherCare)
+                        <button type="button" class="pdp-leather-care-link" data-pdp-leather-care-open>
+                            {{ __('front.pdp_leather_care_link') }}
+                        </button>
+                    @endif
                 </div>
             </div>
             @endif
@@ -579,6 +666,10 @@
 
             {{-- Size --}}
             @if(!empty($sizes))
+            @if($isCatalogSizeProduct ?? false)
+                @include('partials.pdp-collar-size-select', ['catalogSizeRows' => $catalogSizeRows ?? []])
+                <input type="hidden" name="size" id="selectedSize" value="">
+            @else
             <div style="margin-bottom:22px;">
                 <div class="pdp-option-label">
                     <span class="pdp-option-label-main">
@@ -600,6 +691,7 @@
                 </div>
                 <input type="hidden" name="size" id="selectedSize" value="">
             </div>
+            @endif
             @endif
 
             {{-- Qty + Add to cart --}}
@@ -656,6 +748,9 @@
 @if($showSizeChart && ($pdpSizeGuideActive ?? false))
     @include('partials.pdp-size-guide-modal', ['guideRows' => $pdpGuideRows])
 @endif
+@if($showLeatherCare)
+    @include('partials.pdp-leather-care-modal')
+@endif
 
 {{-- Below-fold related grid (remaining products) --}}
 @if(isset($related) && $related->count() > 4)
@@ -678,12 +773,134 @@ const pdpBaseName = @json($product->name);
 const pdpPreloaded = new Set();
 let pdpGalleryImgs = [];
 let pdpGalleryLabel = @json($product->name);
+const pdpVariantStock = @json($variantStockMap ?? []);
+const pdpFallbackStock = @json($fallbackStock ?? 0);
+const pdpUsesProductPool = @json($usesProductPool ?? false);
+const pdpIsCatalogSizeProduct = @json($isCatalogSizeProduct ?? false);
+const pdpCollarPlaceholder = @json(__('front.pdp_collar_size_placeholder'));
+const pdpSizeAvailable = @json(__('front.pdp_size_available'));
+const pdpSizeSoldOut = @json(__('front.pdp_size_sold_out'));
+
+function pdpCurrentColor() {
+    const el = document.getElementById('selectedColor');
+    return el ? el.value : '';
+}
+
+function stockForCollarSize(size) {
+    const color = (pdpCurrentColor() || '').trim();
+    const sizeKey = String(size);
+    const byColor = color ? pdpVariantStock[color] : null;
+    if (byColor && Object.prototype.hasOwnProperty.call(byColor, sizeKey)) {
+        return Number(byColor[sizeKey]) || 0;
+    }
+    if (pdpUsesProductPool && pdpFallbackStock > 0) {
+        return pdpFallbackStock;
+    }
+    return 0;
+}
+
+function pdpSelectFirstColorWithStock() {
+    if (!pdpIsCatalogSizeProduct) return;
+    const colorParam = new URLSearchParams(window.location.search).get('color');
+    if (colorParam) return;
+
+  let bestColor = null;
+    let bestStock = 0;
+    Object.entries(pdpVariantStock || {}).forEach(([color, bySize]) => {
+        const max = Math.max(...Object.values(bySize || {}).map(v => Number(v) || 0));
+        if (max > bestStock) {
+            bestStock = max;
+            bestColor = color;
+        }
+    });
+    if (!bestColor) return;
+
+    const swatch = document.querySelector(`.pdp-color-swatch[data-color="${bestColor}"]`);
+    if (swatch) selectColor(bestColor, swatch);
+}
+
+function refreshCollarSizeOptions() {
+    const panel = document.getElementById('pdpCollarSizePanel');
+    if (!panel) return;
+    const hidden = document.getElementById('selectedSize');
+  const current = hidden ? hidden.value : '';
+    let currentStillOk = false;
+
+    panel.querySelectorAll('.pdp-collar-size-option').forEach(btn => {
+        const size = btn.dataset.size;
+        const stock = stockForCollarSize(size);
+        const disabled = stock <= 0;
+        btn.classList.toggle('is-disabled', disabled);
+        btn.disabled = disabled;
+        btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        const statusEl = btn.querySelector('.pdp-collar-size-status');
+        if (statusEl) {
+            statusEl.textContent = disabled ? pdpSizeSoldOut : pdpSizeAvailable;
+            statusEl.classList.toggle('is-out', disabled);
+            statusEl.classList.remove('is-in');
+            if (!disabled) statusEl.classList.add('is-in');
+        }
+        if (!disabled && size === current) currentStillOk = true;
+    });
+
+    const firstAvail = [...panel.querySelectorAll('.pdp-collar-size-option')].find(b => !b.classList.contains('is-disabled'));
+
+    if (!currentStillOk) {
+        if (hidden) hidden.value = '';
+        const triggerText = document.getElementById('pdpCollarSizeTriggerText');
+        if (triggerText) triggerText.textContent = pdpCollarPlaceholder;
+        panel.querySelectorAll('.pdp-collar-size-option').forEach(b => b.classList.remove('is-selected'));
+        if (firstAvail) firstAvail.click();
+    }
+}
+
+function initCollarSizeSelect() {
+    const wrap = document.getElementById('pdpCollarSize');
+    if (!wrap) return;
+    const trigger = document.getElementById('pdpCollarSizeTrigger');
+    const panel = document.getElementById('pdpCollarSizePanel');
+    const triggerText = document.getElementById('pdpCollarSizeTriggerText');
+    const hidden = document.getElementById('selectedSize');
+    if (!trigger || !panel || !hidden) return;
+
+    trigger.addEventListener('click', () => {
+        refreshCollarSizeOptions();
+        const open = !trigger.classList.contains('is-open');
+        trigger.classList.toggle('is-open', open);
+        panel.hidden = !open;
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    panel.querySelectorAll('.pdp-collar-size-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.classList.contains('is-disabled')) return;
+            hidden.value = btn.dataset.size;
+            if (triggerText) {
+                triggerText.textContent = `${btn.dataset.label} — ${pdpSizeAvailable}`;
+            }
+            panel.querySelectorAll('.pdp-collar-size-option').forEach(b => b.classList.remove('is-selected'));
+            btn.classList.add('is-selected');
+            trigger.classList.remove('is-open');
+            panel.hidden = true;
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) {
+            trigger.classList.remove('is-open');
+            panel.hidden = true;
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    refreshCollarSizeOptions();
+}
 
 function updatePdpVariantTitle(colorName) {
-    const el = document.getElementById('pdpVariantTitle');
+    const el = document.getElementById('pdpVariantColor');
     if (!el) return;
-  const name = (colorName || '').trim();
-  el.textContent = name ? `${pdpBaseName} ${name}` : pdpBaseName;
+    el.textContent = (colorName || '').trim();
 }
 
 function preloadPdpUrl(url) {
@@ -728,6 +945,7 @@ function selectColor(name, el) {
     updatePdpVariantTitle(name);
     const imgs = colorImages[name] || [];
     if (imgs.length) updatePdpImages(imgs, name);
+    if (pdpIsCatalogSizeProduct) refreshCollarSizeOptions();
 }
 
 function selectPdpImage(index) {
@@ -853,6 +1071,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    if (pdpIsCatalogSizeProduct) {
+        if (!colorParam) {
+            pdpSelectFirstColorWithStock();
+        }
+        initCollarSizeSelect();
+    }
 
     const sizeGuideModal = document.getElementById('pdpSizeGuideModal');
     const openSizeGuide = () => {
@@ -873,8 +1097,32 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-pdp-size-guide-close]').forEach(el => {
         el.addEventListener('click', closeSizeGuide);
     });
+
+    const leatherCareModal = document.getElementById('pdpLeatherCareModal');
+    const openLeatherCare = () => {
+        if (!leatherCareModal) return;
+        leatherCareModal.classList.add('is-open');
+        leatherCareModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    };
+    const closeLeatherCare = () => {
+        if (!leatherCareModal) return;
+        leatherCareModal.classList.remove('is-open');
+        leatherCareModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    };
+    document.querySelectorAll('[data-pdp-leather-care-open]').forEach(btn => {
+        btn.addEventListener('click', openLeatherCare);
+    });
+    document.querySelectorAll('[data-pdp-leather-care-close]').forEach(el => {
+        el.addEventListener('click', closeLeatherCare);
+    });
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeSizeGuide();
+        if (e.key === 'Escape') {
+            closeSizeGuide();
+            closeLeatherCare();
+        }
     });
 });
 function selectSize(size, el) {

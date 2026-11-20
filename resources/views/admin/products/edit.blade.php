@@ -79,8 +79,11 @@
                             <input type="number" name="discount_percent" class="form-control" min="0" max="100" value="{{ old('discount_percent', $product->discount_percent) }}">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Giacenza *</label>
+                            <label class="form-label">Giacenza di riserva</label>
                             <input type="number" name="stock" class="form-control" min="0" value="{{ old('stock', $product->stock) }}" required>
+                            <p style="font-size:12px;color:#888;margin:6px 0 0;">
+                                Usata solo se non imposti quantità sotto per colore/taglia (vedi tabella più sotto).
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -143,7 +146,26 @@
                             ? $product->available_sizes
                             : (json_decode($product->available_sizes ?? '[]', true) ?? []));
                         $colorOptions = $colorOptions ?? [];
-                        $sizeOptions = ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
+                        $isCollarProduct = $isCollarProduct ?? false;
+                        $isLeashProduct = $isLeashProduct ?? false;
+                        $isHarnessProduct = $isHarnessProduct ?? false;
+                        $isCatalogSizeProduct = $isCatalogSizeProduct ?? ($isCollarProduct || $isLeashProduct || $isHarnessProduct);
+                        $catalogSizePresets = $catalogSizePresets ?? [];
+                        $collarCategoryId = $collarCategoryId ?? null;
+                        $leashCategoryId = $leashCategoryId ?? null;
+                        $harnessCategoryId = $harnessCategoryId ?? null;
+                        $productUsesSizes = $productUsesSizes ?? \App\Support\CategorySizing::categoryUsesSizes($product->category);
+                        $sizeOptions = $isCatalogSizeProduct
+                            ? array_column($catalogSizePresets, 'size')
+                            : ['XXS', 'XS', 'S', 'SM', 'M', 'L'];
+                        $catalogSizeLabelMap = [];
+                        foreach ($catalogSizePresets as $preset) {
+                            $catalogSizeLabelMap[$preset['size']] = $isLeashProduct
+                                ? \App\Support\LeashSizeOptions::label($preset)
+                                : ($isHarnessProduct
+                                    ? \App\Support\HarnessSizeOptions::label($preset)
+                                    : \App\Support\CollarSizeOptions::label($preset));
+                        }
                     @endphp
 
                     <div class="mb-3">
@@ -221,19 +243,125 @@
                         @endforeach
                     </div>
 
-                    <div class="mt-3">
+                    <div class="mt-3" id="editProductSizesBlock" style="display:{{ ($productUsesSizes ?? true) ? 'block' : 'none' }};">
                         <label class="form-label fw-semibold">Taglie disponibili</label>
-                        <div class="d-flex gap-4 flex-wrap mt-1">
+                        @if($isCollarProduct)
+                            <p style="font-size:12px;color:#888;margin:4px 0 10px;">
+                                Misure catalogo collari da <a href="{{ route('admin.collar-sizes') }}">Admin → Misure collari</a>.
+                            </p>
+                        @elseif($isLeashProduct)
+                            <p style="font-size:12px;color:#888;margin:4px 0 10px;">
+                                Misure guinzagli da <a href="{{ route('admin.leash-sizes') }}">Admin → Misure guinzagli</a> (larghezza + lunghezza 1,20 m).
+                            </p>
+                        @elseif($isHarnessProduct)
+                            <p style="font-size:12px;color:#888;margin:4px 0 10px;">
+                                Taglie pettorine: <strong>XS</strong>, <strong>S</strong>, <strong>M</strong>, <strong>L</strong>.
+                            </p>
+                        @endif
+                        <div class="d-flex gap-3 flex-wrap mt-1" id="editSizesCheckboxes">
                             @foreach($sizeOptions as $size)
-                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+                                <label class="edit-size-label" style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:14px;max-width:100%;">
                                     <input type="checkbox" name="sizes[]" value="{{ $size }}"
                                            {{ in_array($size, $currentSizes) ? 'checked' : '' }}>
-                                    <span style="min-width:32px;height:28px;padding:0 8px;border:1.5px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;">{{ $size }}</span>
+                                    @if($isCatalogSizeProduct && isset($catalogSizeLabelMap[$size]))
+                                        <span style="font-size:13px;line-height:1.35;">{{ $catalogSizeLabelMap[$size] }}</span>
+                                    @else
+                                        <span style="min-width:32px;height:28px;padding:0 8px;border:1.5px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;">{{ $size }}</span>
+                                    @endif
                                 </label>
                             @endforeach
                         </div>
                     </div>
                 </div>
+
+                @php
+                    $variantStockMap = $variantStockMap ?? [];
+                    $stockMatrixColors = $currentColorNames !== [] ? $currentColorNames : ['_default'];
+                    $stockMatrixSizes  = ($productUsesSizes ?? true) ? $currentSizes : [];
+                    $stockVariantTotal = 0;
+                    foreach ($stockMatrixColors as $cName) {
+                        $cKey = $cName === '_default' ? '' : $cName;
+                        foreach ($stockMatrixSizes as $sz) {
+                            $stockVariantTotal += (int) ($variantStockMap[$cKey][$sz] ?? 0);
+                        }
+                    }
+                @endphp
+
+                @if(!empty($stockMatrixSizes))
+                <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:28px;margin-bottom:20px;">
+                    <h5 style="font-weight:700;margin-bottom:8px;">Giacenza per colore e taglia</h5>
+                    <p style="font-size:13px;color:#888;margin:0 0 16px;">
+                        Imposta quante unità hai per ogni combinazione. Qui determinano «Esaurito» in negozio.
+                        @if($stockVariantTotal > 0)
+                            <strong>Totale varianti: {{ $stockVariantTotal }} pezzi.</strong>
+                        @endif
+                    </p>
+
+                    <div style="overflow-x:auto;">
+                        <table class="table table-sm align-middle" style="min-width:480px;margin:0;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:12px;white-space:nowrap;">Colore</th>
+                                    @foreach($stockMatrixSizes as $sz)
+                                        <th style="font-size:12px;text-align:center;min-width:72px;">
+                                            @if($isCatalogSizeProduct)
+                                                {{ $sz }}
+                                            @else
+                                                {{ $sz }}
+                                            @endif
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($stockMatrixColors as $cName)
+                                    @php
+                                        $formColorKey = $cName === '_default' ? '_default' : $cName;
+                                        $dbColorKey = $cName === '_default' ? '' : $cName;
+                                        $colorHex = $cName !== '_default'
+                                            ? ($colorOptions[$cName] ?? ($currentColorMap[$cName]['hex'] ?? '#ccc'))
+                                            : '#ccc';
+                                    @endphp
+                                    <tr>
+                                        <td style="font-size:13px;white-space:nowrap;">
+                                            @if($cName === '_default')
+                                                —
+                                            @else
+                                                <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ $colorHex }};border:1px solid #ddd;vertical-align:middle;margin-right:6px;"></span>
+                                                {{ $cName }}
+                                            @endif
+                                        </td>
+                                        @foreach($stockMatrixSizes as $sz)
+                                            @php
+                                                $stockVal = old(
+                                                    "variant_stock_combo.{$formColorKey}.{$sz}",
+                                                    $variantStockMap[$dbColorKey][$sz] ?? 0
+                                                );
+                                            @endphp
+                                            <td>
+                                                <input type="number"
+                                                       name="variant_stock_combo[{{ $formColorKey }}][{{ $sz }}]"
+                                                       class="form-control form-control-sm text-center"
+                                                       min="0" step="1" value="{{ $stockVal }}"
+                                                       style="max-width:80px;margin:0 auto;">
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @if($isCatalogSizeProduct)
+                        <p style="font-size:12px;color:#999;margin:12px 0 0;">
+                            Legenda: @foreach($catalogSizePresets as $p) <span style="white-space:nowrap;"><strong>{{ $p['size'] }}</strong> {{ $isLeashProduct ? \App\Support\LeashSizeOptions::label($p) : ($isHarnessProduct ? \App\Support\HarnessSizeOptions::label($p) : \App\Support\CollarSizeOptions::label($p)) }}@if(!$loop->last); @endif</span> @endforeach
+                        </p>
+                    @endif
+                </div>
+                @elseif($productUsesSizes ?? true)
+                <div style="background:#fff9e6;border:1px solid #fde68a;border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#854d0e;">
+                    Seleziona almeno una <strong>taglia</strong> per gestire la giacenza per misura; salva il prodotto per generare le righe.
+                </div>
+                @endif
 
             </div>
 
@@ -242,7 +370,7 @@
                     <h5 style="font-weight:700;margin-bottom:20px;">Organizzazione</h5>
                     <div class="mb-3">
                         <label class="form-label">Categoria *</label>
-                        <select name="category_id" class="form-select" required>
+                        <select name="category_id" id="editProductCategory" class="form-select" required data-collar-category-id="{{ $collarCategoryId }}" data-leash-category-id="{{ $leashCategoryId }}" data-harness-category-id="{{ $harnessCategoryId }}" data-no-size-category-ids="{{ implode(',', $noSizeCategoryIds ?? []) }}">
                             <option value="">Seleziona categoria</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" {{ old('category_id',$product->category_id)==$cat->id?'selected':'' }}>{{ $cat->name }}</option>
@@ -380,6 +508,32 @@ function rebuildProductPreview() {
         reader.readAsDataURL(file);
     });
 }
+
+function categoryHasNoSizes(selectEl) {
+    const ids = (selectEl?.dataset.noSizeCategoryIds || '').split(',').filter(Boolean);
+    return ids.includes(String(selectEl?.value || ''));
+}
+
+function editProductCategorySizeMode(selectEl) {
+    if (categoryHasNoSizes(selectEl)) return 'none';
+    const val = selectEl?.value;
+    const collarId = selectEl?.dataset.collarCategoryId;
+    const leashId = selectEl?.dataset.leashCategoryId;
+    const harnessId = selectEl?.dataset.harnessCategoryId;
+    if (collarId && val === collarId) return 'collar';
+    if (leashId && val === leashId) return 'leash';
+    if (harnessId && val === harnessId) return 'harness';
+    return 'sweater';
+}
+
+function toggleEditProductSizesBlock(show) {
+    const block = document.getElementById('editProductSizesBlock');
+    if (block) block.style.display = show ? 'block' : 'none';
+}
+
+document.getElementById('editProductCategory')?.addEventListener('change', function () {
+    toggleEditProductSizesBlock(editProductCategorySizeMode(this) !== 'none');
+});
 
 function markDeleteProductImg(btn, idx) {
     const cb  = document.getElementById('delProductImg_' + idx);
